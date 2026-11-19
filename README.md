@@ -7,6 +7,7 @@
 - [학습 목표](#학습-목표)
 - [프로젝트 구조](#프로젝트-구조)
 - [실행 방법](#실행-방법)
+- [평가 항목별 코드·결과 위치](#평가-항목별-코드결과-위치)
 - [수학 준비: 이 문서를 읽기 전에](#수학-준비-이-문서를-읽기-전에)
 - [1. 미적분: 수치 미분과 Gradient](#1-미적분-수치-미분과-gradient)
 - [2. 선형대수: 행렬은 공간을 변형한다](#2-선형대수-행렬은-공간을-변형한다)
@@ -28,6 +29,7 @@
 - [학습 목표](#학습-목표)
 - [프로젝트 구조](#프로젝트-구조)
 - [실행 방법](#실행-방법)
+- [평가 항목별 코드·결과 위치](#평가-항목별-코드결과-위치)
 - [수학 준비: 이 문서를 읽기 전에](#수학-준비-이-문서를-읽기-전에)
   - [1) 함수: 넣으면 하나가 나오는 규칙](#1-함수-넣으면-하나가-나오는-규칙)
   - [2) 기울기: 옆으로 1 갈 때 위로 얼마나 가나](#2-기울기-옆으로-1-갈-때-위로-얼마나-가나)
@@ -104,7 +106,6 @@
 - [결과 요약](#결과-요약)
 - [용어 사전](#용어-사전)
 - [참고 자료](#참고-자료)
-
 
 </details>
 
@@ -252,10 +253,12 @@ codyssey_A2-1/
 │   ├── linear_algebra.py        # 행렬 변환 시각화, Power Iteration, SVD 이미지 압축
 │   ├── calculus.py              # 중심차분 수치 미분, Gradient 시각화
 │   ├── optimizer.py             # GD, SGD, Momentum, Nesterov, AdaGrad, RMSProp, Adam, Newton, 조합, 시각화
+│   ├── backprop.py              # 역전파 고정 예제, 손계산 기록, NumPy 4자리 비교, 중심차분 검증
+│   ├── probability.py           # 정규·베르누이 분포 그림, softmax 합 검증, MSE·CE와 MLE 확인
 │   └── plot_style.py            # 공통 그림 설정 (한글 글꼴, outputs/ 저장)
 ├── notebooks/
-│   ├── backprop_derivation.ipynb  # 2층 신경망 역전파 유도, 손계산, NumPy 검증
-│   └── probability_loss.ipynb     # 확률 분포 시각화, MSE·CE와 MLE의 연결
+│   ├── backprop_derivation.ipynb  # 역전파 수식 유도와 손계산 (계산 코드는 src/backprop.py)
+│   └── probability_loss.ipynb     # 분포, softmax, MLE 유도 (계산 코드는 src/probability.py)
 ├── outputs/                     # 과제 실험 결과 그래프 (PNG)와 수렴 애니메이션 (GIF)
 ├── docs/
 │   ├── A2-1.pdf                 # 과제 명세
@@ -290,6 +293,8 @@ python -m venv .venv && source .venv/bin/activate && pip install -r requirements
 uv run python src/calculus.py
 uv run python src/linear_algebra.py
 uv run python src/optimizer.py
+uv run python src/backprop.py      # 노트북과 같은 역전파 검증을 터미널에서 실행
+uv run python src/probability.py   # 노트북과 같은 확률·손실 검증을 터미널에서 실행
 ```
 
 **3. 노트북 실행**
@@ -308,6 +313,28 @@ uv run python docs/figures/make_figures.py
 
 > [!NOTE]
 > 재현성을 위해 모든 스크립트는 `np.random.seed(42)`로 시드를 고정한다.
+
+## 평가 항목별 코드·결과 위치
+
+각 요구사항을 어느 파일의 어느 함수가 처리하는지, 결과가 어디에 있는지 정리한다. 노트북의 계산 코드는 `src/backprop.py`, `src/probability.py`에도 그대로 있어서 노트북 없이 `.py`만으로도 확인할 수 있다.
+
+| 요구사항 | 코드 (파일 → 함수) | 노트북 위치 | 결과 |
+|---|---|---|---|
+| 중심차분 수치 미분, f'(3) 오차 ≤ 1e-4 | `src/calculus.py` → `numerical_derivative`, `check_derivative_at_3` | - | 오차 3.9e-11 |
+| Gradient 시각화 (등고선 ⟂) | `src/calculus.py` → `numerical_gradient`, `plot_gradient_field` | - | `outputs/calculus_gradient_field.png` |
+| 선형 변환과 det, 넓이 비율 오차 ≤ 1% | `src/linear_algebra.py` → `plot_transform`, `check_area_ratio` | - | 오차 0.00% |
+| Power Iteration vs `np.linalg.eig` | `src/linear_algebra.py` → `power_iteration`, `verify_with_eig` | - | λ = 4.6180 |
+| SVD 압축 (k = 10, 50, 100) | `src/linear_algebra.py` → `svd_compress`, `plot_svd_compression` | - | `outputs/linalg_svd_compression.png` |
+| Vanilla GD lr 0.1, 100회, 원점 근처 도달 | `src/optimizer.py` → `experiment_vanilla_bowl(radius=1.0, spec_radius=0.1)` | - | 거리 1.4e-9, 반경 1·0.1 모두 통과 |
+| 학습률별 수렴·발산, Momentum 비교 | `src/optimizer.py` → `experiment_learning_rates`, `experiment_momentum_bowl`, `experiment_ellipse` | - | 3장 결과와 해석 |
+| 역전파 고정 예제와 손계산 기록 | `src/backprop.py` → 모듈 docstring(손계산 기록), `X`, `W1`, `B1`, `W2`, `B2`, `Y_TRUE`, `HAND_RESULTS` | `backprop_derivation.ipynb` 2절(유도), 3절(손계산 표) | 중간값 6자리, 결과 4자리 |
+| 손계산 vs NumPy 소수 4자리 비교 | `src/backprop.py` → `forward`, `backward`, `compare_with_hand(decimals=4)` | 4절 "손계산과 비교 (소수점 4자리)" | 13개 값 모두 일치 |
+| 역전파 중심차분 검증 | `src/backprop.py` → `gradient_check` | 5절 | 상대 오차 2.0e-11 |
+| 정규분포 PDF 2종 비교 그림 | `src/probability.py` → `normal_pdf`, `plot_normal_pdfs` | `probability_loss.ipynb` 1절 | `outputs/prob_normal_pdf.png` |
+| 베르누이 PMF 2종 비교 그림 | `src/probability.py` → `bernoulli_pmf`, `plot_bernoulli_pmfs` | 2절 | `outputs/prob_bernoulli_pmf.png` |
+| softmax 구현, 합 = 1 (허용 오차 1e-6) | `src/probability.py` → `softmax`, `check_softmax_sum(tol=1e-6)` | 3절 | 최대 \|합 − 1\| = 1.1e-16 |
+| MSE 최소화 = 정규분포 MLE 유도와 확인 | `src/probability.py` → 모듈 docstring(유도 1), `check_mse_mle` | 4절 | 두 최솟값 모두 w = 2.055 |
+| CE 최소화 = 베르누이/카테고리 MLE 유도와 확인 | `src/probability.py` → 모듈 docstring(유도 2, 3), `check_bce_mle`, `check_softmax_ce_grad` | 5절 | p = 0.70, 기울기 차이 6.9e-12 |
 
 ---
 
@@ -1996,7 +2023,7 @@ Lookahead는 안쪽 옵티마이저가 **흔들릴 때** 그 흔들림의 평균
 - [x] (추가) 학습률 탐색으로 알고리즘별 수렴 범위를 재고, 이론적 한계(2/λmax 등)와 비교한다.
 - [x] (추가) `Nesterov`, `AdaGrad`, `RMSProp`을 구현하고, 역사 순서대로 직전 방법과 비교한다.
 - [x] (추가) 여러 옵티마이저 조합(`Lookahead`, `LevenbergMarquardt`, `SwitchOptimizer`)을 구현하고 단독 사용과 비교한다.
-- [x] f(x, y) = x² + y²에 lr = 0.1로 100회 반복해 원점 근처(반경 0.1 이내)에 도달하는지 확인한다.
+- [x] f(x, y) = x² + y²에 lr = 0.1로 100회 반복해 원점 근처(반경 0.1 이내)에 도달하는지 확인한다. (판정 반경은 `experiment_vanilla_bowl(radius=1.0, spec_radius=0.1)` 인자로 바꿀 수 있고, 평가 기준 반경 1과 명세 반경 0.1을 모두 출력한다.)
 - [x] 수렴 경로를 등고선 위에 점선으로 그린다.
 - [x] lr = 0.5 이상에서 경로가 발산하는지 그래프로 확인한다.
 - [x] Momentum(β = 0.9)과 Vanilla GD의 경로를 하나의 Figure에 겹쳐 그린다.
@@ -2016,7 +2043,7 @@ Lookahead는 안쪽 옵티마이저가 **흔들릴 때** 그 흔들림의 평균
 
 ![Vanilla GD 경로](outputs/optimizer_vanilla_bowl.png)
 
-최종 위치는 (1.02e-9, 1.02e-9), 원점까지 거리 **1.4e-9**로 기준(반경 0.1)을 통과했다. 매 걸음 좌표에 1 − 2 × 0.1 = 0.8이 곱해지므로 100회 후 5 × 0.8¹⁰⁰ ≈ 1e-9이 되어 이론값과 같다. 반경 1e-3 안에는 40회 만에 들어갔다.
+최종 위치는 (1.02e-9, 1.02e-9), 원점까지 거리 **1.4e-9**로 평가 기준(반경 1)과 과제 명세 기준(반경 0.1)을 모두 통과했다. 매 걸음 좌표에 1 − 2 × 0.1 = 0.8이 곱해지므로 100회 후 5 × 0.8¹⁰⁰ ≈ 1e-9이 되어 이론값과 같다. 반경 1e-3 안에는 40회 만에 들어갔다.
 
 **② 학습률에 따른 수렴과 발산 (20회)**
 
@@ -2682,7 +2709,7 @@ y = 2x + 1 + 잡음(σ = 0.5)으로 만든 데이터 50개에서 기울기 w를 
 | det(A)와 넓이 비율 | 오차 ≤ 1% | 회전, 스케일링, 전단, 일반 행렬(det 3) 모두 오차 0.00% | ✅ |
 | Power Iteration vs `np.linalg.eig` | 오차 ≤ 5% | [[4, 1], [1, 3]]: λ = 4.6180 (21회), 오차 2.3e-13 | ✅ |
 | SVD 압축 (k = 10, 50, 100) | Figure 비교 | 오차 18.3%, 0.66%, 0% (k = 100은 rank 64로 제한) | ✅ |
-| Vanilla GD (x² + y², lr = 0.1, 100회) | 원점 반경 0.1 이내 | 거리 1.4e-9 | ✅ |
+| Vanilla GD (x² + y², lr = 0.1, 100회) | 원점 반경 1 이내 (명세: 0.1) | 거리 1.4e-9, 두 기준 모두 통과 | ✅ |
 | lr 증가 시 발산 | 그래프 확인 | lr = 0.5는 1회 만에 수렴, lr = 1.0 진동, lr = 1.05 발산 (이론 경계 lr = 1) | ✅ (명세와 차이 설명) |
 | Momentum vs Vanilla GD (x² + y²) | 한 Figure에 비교 | Vanilla 1.4e-9, Momentum 2.0e-2 (원형 함수에서는 Vanilla가 유리) | ✅ |
 | Momentum vs Vanilla GD (x² + 10y²) | 이점 확인 | lr = 0.01에서 422회 → 153회 (2.8배 빠름), lr = 0.05·0.09에서는 Vanilla가 빠름 | ✅ |

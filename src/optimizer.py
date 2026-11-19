@@ -815,14 +815,29 @@ def contour_background(f, xlim, ylim, levels, start=None, target=(0.0, 0.0), asp
 # 실험
 # ---------------------------------------------------------------------------
 
-def experiment_vanilla_bowl():
-    """x² + y² 에 Vanilla GD (lr=0.1, 100회)를 적용해 원점 반경 0.1 안에 들어가는지 확인한다."""
-    path = optimize(bowl_grad, START, VanillaGD(0.1), 100)
+def experiment_vanilla_bowl(radius=1.0, spec_radius=0.1, lr=0.1, n_iters=100):
+    """x² + y² 에 Vanilla GD (lr=0.1, 100회)를 적용해 원점 근처에 도달하는지 확인한다.
+
+    판정 반경은 인자로 바꿀 수 있다. 평가 기준은 반경 1, 과제 명세 PDF는 반경 0.1이라
+    두 기준을 모두 확인해 출력한다.
+
+    Args:
+        radius: 평가 기준 반경 (기본 1.0).
+        spec_radius: 과제 명세의 반경 (기본 0.1). None이면 확인하지 않는다.
+        lr: 학습률 η.
+        n_iters: 반복 횟수.
+
+    Returns:
+        경로. shape (n_iters + 1, 2).
+    """
+    path = optimize(bowl_grad, START, VanillaGD(lr), n_iters)
     final = path[-1]
     dist = np.linalg.norm(final)
-    print("[Vanilla GD] f = x² + y², 시작 (5, 5), lr = 0.1, 100회")
-    print(f"  최종 위치 = ({final[0]:.2e}, {final[1]:.2e}), 원점까지 거리 = {dist:.2e} "
-          f"→ {'통과' if dist < 0.1 else '실패'} (기준 반경 0.1)")
+    print(f"[Vanilla GD] f = x² + y², 시작 (5, 5), lr = {lr}, {n_iters}회")
+    print(f"  최종 위치 = ({final[0]:.2e}, {final[1]:.2e}), 원점까지 거리 = {dist:.2e}")
+    checks = [("평가 기준", radius)] + ([("과제 명세", spec_radius)] if spec_radius is not None else [])
+    for name, r in checks:
+        print(f"  반경 {r} 이내 ({name}): {'통과' if dist < r else '실패'}")
     fig, ax = plt.subplots(figsize=(6, 5.6))
     plot_paths(bowl, {"Vanilla GD (lr=0.1)": (path, BLUE)},
                f"$x^2+y^2$, lr = 0.1, 100회: 최종 거리 {dist:.1e}", ax=ax)
