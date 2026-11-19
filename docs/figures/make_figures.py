@@ -168,6 +168,46 @@ def fig_dot_product():
     save(fig, "fig00d_dot_product")
 
 
+def fig_trig():
+    """삼각함수: 반지름 1인 원 위의 점 (cos θ, sin θ), 기울기 tan θ, 각도에 따른 그래프."""
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(12, 4.8), gridspec_kw={"width_ratios": [1, 1.4]})
+    th = np.deg2rad(30)
+    c, s = np.cos(th), np.sin(th)
+    t = np.linspace(0, 2 * np.pi, 300)
+    a1.plot(np.cos(t), np.sin(t), color=GRAY, ls=":", lw=1.2)
+    a1.axhline(0, color=GRAY, lw=0.8)
+    a1.axvline(0, color=GRAY, lw=0.8)
+    a1.plot([0, c], [0, s], color="black", lw=2)
+    a1.plot([0, c], [0, 0], color=BLUE, lw=5, solid_capstyle="butt")
+    a1.plot([c, c], [0, s], color=ORANGE, lw=5, solid_capstyle="butt")
+    a1.plot(c, s, "o", color="black", ms=7)
+    a1.plot([0, 1.3], [0, 1.3 * np.tan(th)], color=GREEN, ls="--", lw=1.2)
+    ts = np.linspace(0, th, 30)
+    a1.plot(0.25 * np.cos(ts), 0.25 * np.sin(ts), color="black", lw=1)
+    a1.text(0.28, 0.06, "θ = 30도", fontsize=9)
+    a1.text(c / 2, -0.13, f"cos θ = {c:.3f}", color=BLUE, ha="center", fontsize=10)
+    a1.text(c + 0.05, s / 2, f"sin θ = {s:.1f}", color=ORANGE, fontsize=10)
+    a1.text(c + 0.03, s + 0.07, f"({c:.3f}, {s:.1f})", fontsize=9)
+    a1.text(0.55, 0.82, f"tan θ = sin ÷ cos\n= {np.tan(th):.3f} (기울기)", color=GREEN, fontsize=9)
+    a1.text(0.62, -0.62, "반지름 1", color=GRAY, fontsize=9)
+    a1.set(xlim=(-1.25, 1.45), ylim=(-1.25, 1.25), xticks=[-1, 0, 1], yticks=[-1, 0, 1],
+           title="반지름 1인 원 위의 점 = (cos θ, sin θ)")
+    a1.set_aspect("equal")
+
+    deg = np.linspace(0, 360, 361)
+    a2.plot(deg, np.cos(np.deg2rad(deg)), color=BLUE, lw=2, label="cos θ (가로 위치)")
+    a2.plot(deg, np.sin(np.deg2rad(deg)), color=ORANGE, lw=2, label="sin θ (세로 위치)")
+    a2.axhline(0, color=GRAY, lw=0.8)
+    for d in (30, 90, 180, 270):
+        a2.axvline(d, color=GRAY, lw=0.6, ls=":")
+    a2.plot(30, c, "o", color=BLUE)
+    a2.plot(30, s, "o", color=ORANGE)
+    a2.set(xticks=[0, 30, 90, 180, 270, 360], xlabel="각도 θ (도)", ylim=(-1.2, 1.2),
+           title="각도를 바꾸면: 항상 -1 ~ 1 사이를 오르내린다")
+    a2.legend(loc="lower left", fontsize=9)
+    save(fig, "fig00g_trig")
+
+
 def fig_e_number():
     """e가 나오는 곳: ① 복리 (1 + 1/n)^n의 극한 ② e^x는 높이와 기울기가 같다."""
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(11.5, 4))
@@ -678,6 +718,7 @@ def fig_activations():
 if __name__ == "__main__":
     fig_terrain()
     fig_vector_basics()
+    fig_trig()
     fig_dot_product()
     fig_e_number()
     fig_mse()
