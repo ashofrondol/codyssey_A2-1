@@ -24,7 +24,7 @@ import numpy as np
 
 from matplotlib.animation import FuncAnimation
 
-from plot_style import (BLUE, GRAY, GREEN, ORANGE, PURPLE, RED, plain_log_ticks,
+from plot_style import (BLUE, GRAY, GREEN, ORANGE, PINK, PURPLE, RED, plain_log_ticks,
                         save_animation, save_figure, setup_style)
 
 np.random.seed(42)
@@ -1492,6 +1492,146 @@ def make_animations():
     animate_paths(paths, bg, "로젠브록 함수", "optimizer_rosenbrock_anim", steps=steps, fps=12, ncols=4)
 
 
+LR_GRID = np.array([1e-4, 2e-4, 5e-4, 1e-3, 2e-3, 5e-3, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0])
+
+ALL_METHODS = [
+    ("Vanilla GD", lambda lr: VanillaGD(lr), BLUE),
+    ("Momentum", lambda lr: Momentum(lr, 0.9), RED),
+    ("Nesterov", lambda lr: Nesterov(lr, 0.9), ORANGE),
+    ("AdaGrad", lambda lr: AdaGrad(lr), PINK),
+    ("RMSProp", lambda lr: RMSProp(lr), GREEN),
+    ("Adam", lambda lr: Adam(lr), PURPLE),
+    ("Newton", None, GRAY),   # 학습률 없음 (Hessian으로 보폭을 정한다)
+]
+
+
+def iterations_to_settle(path, tol=1e-3, target=(0.0, 0.0)):
+    """경로가 목표 반경 tol 안에 들어간 뒤 **끝까지 머문** 첫 걸음 번호를 찾는다.
+
+    iterations_to_reach는 반경을 한 번 스쳐 지나가도 도달로 센다. 학습률이 크면 최솟값을
+    지나쳐 다시 멀어지는 경우가 있어서, 여기서는 그 뒤로 계속 반경 안에 있어야 수렴으로 본다.
+
+    Returns:
+        수렴한 걸음 번호. 마지막 위치가 반경 밖이면 None.
+    """
+    with np.errstate(over="ignore", invalid="ignore"):
+        dist = np.linalg.norm(path - np.asarray(target), axis=1)
+    outside = ~(dist < tol)            # nan, inf도 반경 밖으로 본다
+    if outside[-1]:
+        return None
+    idx = np.nonzero(outside)[0]
+    return 0 if idx.size == 0 else int(idx[-1] + 1)
+
+
+def tune_lr(make_opt, grad_fn, start, target, n_iters, hess_fn=None, lrs=LR_GRID, tol=1e-3):
+    """학습률 후보마다 실행해 목표 반경 tol 안으로 가장 빨리 수렴한(들어가서 머문) 학습률을 고른다.
+
+    Args:
+        make_opt: 학습률을 받아 옵티마이저를 만드는 함수. None이면 학습률 없는 방법(Newton)으로 1번만 실행.
+        lrs: 학습률 후보.
+
+    Returns:
+        (가장 좋은 lr, 그때의 경로, 도달 걸음 수, {lr: 도달 걸음 수}).
+        어느 학습률로도 도달하지 못하면 최종 거리가 가장 가까운 학습률을 고른다.
+    """
+    if make_opt is None:
+        path = optimize(grad_fn, start, Newton(), n_iters, hess_fn=hess_fn)
+        k = iterations_to_settle(path, tol, target)
+        return None, path, k, {None: k}
+
+    results = {}
+    best = None   # (정렬 키, lr, path, k)
+    for lr in lrs:
+        with np.errstate(over="ignore", invalid="ignore"):
+            path = optimize(grad_fn, start, make_opt(lr), n_iters)
+            k = iterations_to_settle(path, tol, target)
+            final = np.linalg.norm(path[-1] - np.asarray(target))
+        results[lr] = k
+        key = (0, k) if k is not None else (1, final if np.isfinite(final) else np.inf)
+        if best is None or key < best[0]:
+            best = (key, lr, path, k)
+    return best[1], best[2], best[3], results
+
+
+def experiment_all_optimizers():
+    """모든 경사하강법을 x² + 10y²와 로젠브록 두 지형에서, 각자 가장 좋은 학습률로 비교한다.
+
+    학습률이 같으면 어떤 방법은 발산하고 어떤 방법은 멈추므로, 방법마다 LR_GRID의 13개
+    후보를 모두 시험해 목표(반경 1e-3) 안으로 가장 빨리 수렴한 학습률을 쓴다. 수렴은
+    반경 안에 들어간 뒤 끝까지 머문 것을 말한다(iterations_to_settle). 이렇게 하면
+    "각 방법이 최선을 다했을 때"의 비교가 된다. 도달한 학습률 후보 개수는 학습률을
+    고르기 쉬운 정도(민감도)를 보여 준다.
+    SGD는 데이터가 없는 함수라 비교에서 뺐다 (선형 회귀 실험에서 비교).
+    """
+    cases = [
+        ("$x^2+10y^2$", "x² + 10y²", ellipse, ellipse_grad, ellipse_hess, START, (0.0, 0.0), 3000,
+         contour_background(ellipse, (-6, 6), (-6, 6), np.geomspace(0.05, 400, 14), start=START)),
+        ("로젠브록", "로젠브록", rosenbrock, rosenbrock_grad, rosenbrock_hess, np.array([-1.5, 2.0]),
+         (1.0, 1.0), 10000,
+         contour_background(rosenbrock, (-2, 2), (-1, 3), np.geomspace(0.1, 2500, 18),
+                            start=np.array([-1.5, 2.0]), target=(1.0, 1.0), aspect=False)),
+    ]
+    n_m = len(ALL_METHODS)
+    fig = plt.figure(figsize=(3.3 * n_m, 13))
+    gs = fig.add_gridspec(3, n_m, height_ratios=[1, 1, 0.9])
+    fig_h, axes_h = plt.subplots(1, 2, figsize=(16, 4.6))
+    print(f"[모든 경사하강법 비교] 방법마다 학습률 {len(LR_GRID)}개 중 가장 빠른 값 사용, "
+          "목표 반경 1e-3 안에 들어가 끝까지 머문 걸음 수")
+    summary = {}
+
+    for row, (title, name, f, gf, hf, start, target, n, bg) in enumerate(cases):
+        paths, grid = {}, []
+        print(f"  [{name}] 시작 ({start[0]:g}, {start[1]:g}), 최대 {n}걸음")
+        for m_name, make_opt, color in ALL_METHODS:
+            lr, path, k, results = tune_lr(make_opt, gf, start, target, n, hess_fn=hf)
+            n_ok = sum(v is not None for v in results.values())
+            lr_txt = "없음" if lr is None else f"{lr:g}"
+            summary[(name, m_name)] = (lr, k, n_ok)
+            label = f"{m_name}\n{'학습률 없음' if lr is None else f'lr={lr_txt}'}: {_fmt_iters(k)}"
+            paths[label] = (path, color)
+            final = path[-1]
+            print(f"    {m_name:<11} 최적 lr = {lr_txt:<7} 도달 {_fmt_iters(k):>9}, "
+                  f"도달한 lr 후보 {n_ok if make_opt else '-'}/{len(LR_GRID) if make_opt else '-'}, "
+                  f"최종 ({final[0]:+.4f}, {final[1]:+.4f})")
+            if make_opt is not None:
+                grid.append([np.nan if results[lr_] is None else results[lr_] for lr_ in LR_GRID])
+        plot_path_panels(paths, bg, [fig.add_subplot(gs[row, k]) for k in range(n_m)])
+
+        ax = fig.add_subplot(gs[2, row * (n_m // 2): (row + 1) * (n_m // 2) + row])
+        for label, (path, c) in paths.items():
+            with np.errstate(over="ignore", invalid="ignore"):
+                d = np.linalg.norm(path - np.asarray(target), axis=1)
+            ax.semilogy(np.maximum(np.nan_to_num(d, nan=1e3, posinf=1e3), 1e-16), color=c,
+                        label=label.replace("\n", " "))
+        ax.set_xscale("symlog", linthresh=10)
+        plain_log_ticks(ax, "y")
+        ax.set(xlabel="걸음 수 (10 이후 로그)", ylabel="최솟값까지 거리 (로그)", title=f"{title}: 최솟값까지 거리")
+        ax.legend(fontsize=7)
+
+        # 학습률 × 방법 도달 걸음 수 표 (회색 = 도달 못 함)
+        ah = axes_h[row]
+        grid = np.array(grid, dtype=float)
+        im = ah.imshow(np.log10(grid), cmap="viridis_r", aspect="auto")
+        ah.set_facecolor("#dddddd")
+        names = [m for m, mk, _ in ALL_METHODS if mk is not None]
+        ah.set(xticks=range(len(LR_GRID)), xticklabels=[f"{v:g}" for v in LR_GRID],
+               yticks=range(len(names)), yticklabels=names, xlabel="학습률 lr",
+               title=f"{title}: 수렴 걸음 수 (회색 = 수렴 못 함)")
+        ah.tick_params(axis="x", labelrotation=45)
+        for i in range(grid.shape[0]):
+            for j in range(grid.shape[1]):
+                if np.isfinite(grid[i, j]):
+                    v = int(grid[i, j])
+                    ah.text(j, i, f"{v}", ha="center", va="center", fontsize=7,
+                            color="white" if np.log10(v) > np.nanmean(np.log10(grid)) else "black")
+
+    fig.suptitle("모든 경사하강법 비교: 위 = x² + 10y², 가운데 = 로젠브록 (각 방법의 최적 학습률)", y=1.0)
+    save_figure(fig, "optimizer_all_methods")
+    fig_h.suptitle("학습률별 수렴 걸음 수: 칸이 많이 채워진 방법일수록 학습률을 고르기 쉽다", y=1.02)
+    save_figure(fig_h, "optimizer_all_methods_lr_grid")
+    return summary
+
+
 def main():
     """과제 요구 사항을 차례대로 실행하고 그림을 outputs/에 저장한다."""
     setup_style()
@@ -1504,6 +1644,7 @@ def main():
     experiment_lr_sweep()
     experiment_history()
     experiment_combinations()
+    experiment_all_optimizers()
     make_animations()
 
 
