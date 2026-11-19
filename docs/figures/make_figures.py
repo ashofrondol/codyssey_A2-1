@@ -143,6 +143,88 @@ def fig_vector_basics():
     save(fig, "fig00b_vector_basics")
 
 
+def fig_dot_product():
+    """내적 = (a의 길이) × (b의 그림자 길이). 각도에 따라 양수, 0, 음수가 된다."""
+    a_vec = np.array([3.0, 0.0])
+    cases = [(30, "같은 쪽 → 양수"), (90, "직각 → 0"), (150, "반대쪽 → 음수")]
+    fig, axes = plt.subplots(1, 3, figsize=(13, 3.9))
+    for ax, (deg, desc) in zip(axes, cases):
+        th = np.deg2rad(deg)
+        b_vec = 2 * np.array([np.cos(th), np.sin(th)])
+        dot = a_vec @ b_vec
+        shadow = b_vec[0]  # a가 x축 방향이므로 그림자는 b의 x 성분
+        ax.set(xlim=(-2.2, 3.6), ylim=(-0.9, 2.4), xticks=[], yticks=[])
+        ax.set_aspect("equal")
+        ax.axhline(0, color="#dddddd", lw=0.8)
+        ax.plot([b_vec[0], b_vec[0]], [0, b_vec[1]], color=GRAY, ls=":", lw=1.2)
+        ax.plot([0, shadow], [-0.25, -0.25], color=ORANGE, lw=5, solid_capstyle="butt")
+        ax.text(shadow / 2, -0.6, f"그림자 {shadow:.2f}", color=ORANGE, ha="center", fontsize=9)
+        _arrow(ax, 0, 0, *a_vec, BLUE)
+        ax.text(3.0, 0.12, "a = (3, 0)", color=BLUE, ha="right", fontsize=9)
+        _arrow(ax, 0, 0, *b_vec, RED)
+        ax.text(b_vec[0], b_vec[1] + 0.12, f"b (길이 2, {deg}도)", color=RED, ha="left" if deg < 90 else ("center" if deg == 90 else "left"), fontsize=9)
+        ax.set_title(f"{desc}\na · b = 3 × {shadow:.2f} = {dot:.2f}", fontsize=10)
+    fig.suptitle("내적 = a의 길이 × (b가 a 방향에 드리운 그림자 길이)", fontsize=11)
+    save(fig, "fig00d_dot_product")
+
+
+def fig_e_number():
+    """e가 나오는 곳: ① 복리 (1 + 1/n)^n의 극한 ② e^x는 높이와 기울기가 같다."""
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(11.5, 4))
+    n = np.unique(np.logspace(0, 4, 60).astype(int))
+    a1.plot(n, (1 + 1 / n) ** n, "o-", color=BLUE, ms=3, lw=1.5)
+    a1.axhline(np.e, color=RED, ls="--", lw=1.2)
+    a1.text(1.2, np.e + 0.03, "e = 2.71828...", color=RED, fontsize=10)
+    for k in (1, 2, 12, 365):
+        a1.annotate(f"n={k}: {(1 + 1 / k) ** k:.3f}", xy=(k, (1 + 1 / k) ** k),
+                    xytext=(k * 2.2, (1 + 1 / k) ** k - 0.15), fontsize=8, color=GRAY,
+                    arrowprops=dict(arrowstyle="-", color=GRAY, lw=0.6))
+    a1.set_xscale("log")
+    a1.set(xlabel="1년을 몇 번으로 나눠 이자를 붙이나 (n)", ylabel="1년 뒤 금액 (원금 1)",
+           ylim=(1.8, 2.85), title="연 100% 이자를 잘게 나눠 붙이면 e에 다가간다")
+
+    x = np.linspace(-2, 2, 200)
+    a2.plot(x, np.exp(x), color=BLUE, lw=2.2, label="$e^x$")
+    for x0, c in [(0, GREEN), (1, ORANGE)]:
+        y0 = np.exp(x0)
+        xs = np.linspace(x0 - 1, x0 + 0.8, 10)
+        a2.plot(xs, y0 + y0 * (xs - x0), color=c, ls="--", lw=1.4)
+        a2.plot(x0, y0, "o", color=c)
+        a2.text(x0 - 0.15, y0 + 0.35, f"x={x0}: 높이 {y0:.2f}, 기울기 {y0:.2f}", color=c,
+                fontsize=9, ha="right")
+    a2.set(xlabel="x", ylabel="y", ylim=(-0.5, 7.4),
+           title="$e^x$는 어느 점에서나 높이 = 기울기\n→ 미분해도 자기 자신 ($(e^x)' = e^x$)")
+    a2.legend(loc="upper left")
+    save(fig, "fig00e_e_number")
+
+
+def fig_mse():
+    """MSE = 오차를 한 변으로 하는 정사각형 넓이의 평균."""
+    x = np.array([1.0, 2.0, 3.0])
+    y = np.array([4.0, 4.0, 9.0])
+    y_hat = 2 * x + 1
+    err = y - y_hat
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9, 4.6))
+    xs = np.linspace(0.5, 3.8, 50)
+    for ax in (a1, a2):
+        ax.plot(xs, 2 * xs + 1, color=BLUE, lw=2, label=r"예측 $\hat{y}$ = 2x + 1")
+        ax.plot(x, y, "o", color=RED, ms=7, label="정답 y", zorder=5)
+        ax.set(xlim=(0.4, 5.0), ylim=(1.5, 10), xlabel="x", ylabel="y")
+        ax.set_aspect("equal")
+    for xi, yi, yh, e in zip(x, y, y_hat, err):
+        a1.plot([xi, xi], [yh, yi], color=ORANGE, lw=2)
+        a1.text(xi + 0.1, (yi + yh) / 2, f"오차 {e:+.0f}", color=ORANGE, fontsize=9, va="center")
+        a2.add_patch(plt.Rectangle((xi, min(yi, yh)), abs(e), abs(e), color=ORANGE, alpha=0.35))
+        a2.text(xi + abs(e) + 0.08, (yi + yh) / 2, f"넓이 {e**2:.0f}", color=ORANGE, fontsize=9,
+                va="center")
+    a1.set_title(f"오차 = 정답 - 예측: {err[0]:+.0f}, {err[1]:+.0f}, {err[2]:+.0f}\n"
+                 "그냥 더하면 +1과 -1이 지워진다")
+    a2.set_title(f"제곱 = 오차를 한 변으로 하는 정사각형 넓이\n"
+                 f"MSE = (1 + 1 + 4) ÷ 3 = {np.mean(err**2):.0f}")
+    a1.legend(loc="lower right", fontsize=9)
+    save(fig, "fig00f_mse")
+
+
 def fig_secant_tangent():
     """할선이 h → 0 일 때 접선에 다가가는 모습."""
     x = np.linspace(-0.3, 4.8, 300)
@@ -596,6 +678,9 @@ def fig_activations():
 if __name__ == "__main__":
     fig_terrain()
     fig_vector_basics()
+    fig_dot_product()
+    fig_e_number()
+    fig_mse()
     fig_xor()
     fig_secant_tangent()
     fig_zoom_tangent()
