@@ -36,6 +36,7 @@ plt.rcParams.update(
 )
 
 BLUE, RED, GREEN, ORANGE, GRAY = "#378ADD", "#E24B4A", "#1D9E75", "#BA7517", "#888780"
+PURPLE_ = "#7F77DD"
 
 
 def save(fig, name):
@@ -715,6 +716,72 @@ def fig_activations():
     fig.suptitle("은닉층 활성화 함수의 변천: 실선 = 함수, 빨간 점선 = 기울기 (역전파에 곱해지는 값)", y=1.03)
     save(fig, "fig11b_activations")
 
+def _fit_line(x, y, loss, n_iter=20000, lr=0.01, delta=1.0):
+    """직선 y = w x + b 를 주어진 손실로 경사하강법 학습한다 (그림용)."""
+    w = b = 0.0
+    for _ in range(n_iter):
+        e = (w * x + b) - y
+        if loss == "MSE":
+            g = 2 * e
+        elif loss == "MAE":
+            g = np.sign(e)
+        else:  # Huber
+            g = np.clip(e, -delta, delta)
+        w -= lr * np.mean(g * x)
+        b -= lr * np.mean(g)
+    return w, b
+
+
+def fig_regression_losses():
+    """회귀 손실 MSE, MAE, Huber: 오차에 매기는 벌점과, 이상치가 있을 때 학습된 직선."""
+    rng = np.random.default_rng(7)
+    e = np.linspace(-3, 3, 400)
+    huber = np.where(np.abs(e) <= 1, 0.5 * e ** 2, np.abs(e) - 0.5)
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(12, 4.3))
+    a1.plot(e, e ** 2, color=RED, lw=2, label="MSE: 오차²")
+    a1.plot(e, np.abs(e), color=BLUE, lw=2, label="MAE: |오차|")
+    a1.plot(e, huber, color=GREEN, lw=2, ls="--", label="Huber (δ=1): 작으면 ½오차², 크면 직선")
+    a1.set(xlabel="오차 (예측 - 정답)", ylabel="벌점 (손실)", ylim=(0, 6),
+           title="오차가 커질수록 MSE의 벌점은 제곱으로 커진다")
+    a1.legend(fontsize=9)
+
+    x = np.sort(rng.uniform(0, 10, 40))
+    y = 2 * x + 1 + rng.normal(0, 1, 40)
+    xo = np.array([8.0, 8.5, 9.0, 9.5])
+    yo = np.array([-8.0, -10.0, -9.0, -11.0])
+    X, Y = np.r_[x, xo], np.r_[y, yo]
+    a2.scatter(x, y, s=14, color=GRAY, label="정상 데이터 (y = 2x + 1 근처)")
+    a2.scatter(xo, yo, s=40, color=ORANGE, marker="x", label="이상치 4개")
+    xs = np.linspace(0, 10, 2)
+    for loss, c in [("MSE", RED), ("MAE", BLUE), ("Huber", GREEN)]:
+        w, b = _fit_line(X, Y, loss)
+        a2.plot(xs, w * xs + b, color=c, lw=2, label=f"{loss}로 학습: 기울기 {w:.2f}")
+    a2.set(xlabel="x", ylabel="y", title="이상치 4개가 섞였을 때 학습된 직선 (정답 기울기 2)")
+    a2.legend(fontsize=8)
+    save(fig, "fig15_regression_losses")
+
+
+def fig_classification_losses():
+    """정답이 1일 때 BCE와 MSE: 손실 값과, sigmoid 앞 점수 z에 대한 기울기."""
+    p = np.linspace(0.001, 0.999, 400)
+    z = np.linspace(-8, 4, 400)
+    s = 1 / (1 + np.exp(-z))
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(12, 4.3))
+    a1.plot(p, -np.log(p), color=PURPLE_, lw=2, label="BCE: -log($\\hat{y}$)")
+    a1.plot(p, (1 - p) ** 2, color=RED, lw=2, label="MSE: (1 - $\\hat{y}$)²")
+    a1.set(xlabel="예측 확률 $\\hat{y}$ (정답은 1)", ylabel="손실", ylim=(0, 5),
+           title="틀린 쪽으로 확신할수록($\\hat{y}$ → 0) BCE는 끝없이 커지고, MSE는 1에서 멈춘다")
+    a1.legend()
+    a2.plot(z, np.abs(s - 1), color=PURPLE_, lw=2, label="BCE의 기울기 크기 |$\\hat{y}$ - 1|")
+    a2.plot(z, np.abs(2 * (s - 1) * s * (1 - s)), color=RED, lw=2, label="MSE의 기울기 크기 |2($\\hat{y}$ - 1)·$\\hat{y}$(1 - $\\hat{y}$)|")
+    a2.axvline(-5, color=GRAY, ls=":")
+    a2.text(-4.8, 0.72, "z = -5에서\nBCE 기울기 0.99\nMSE 기울기 0.013 (75배 작음)", fontsize=9, color=GRAY)
+    a2.set(xlabel="sigmoid에 들어가는 점수 z (작을수록 틀린 쪽으로 확신)", ylabel="기울기 크기", ylim=(-0.03, 1.35),
+           title="크게 틀렸을 때 MSE는 기울기가 사라져 학습이 멈춘다")
+    a2.legend(fontsize=9, loc="upper right")
+    save(fig, "fig16_classification_losses")
+
+
 if __name__ == "__main__":
     fig_terrain()
     fig_vector_basics()
@@ -739,3 +806,5 @@ if __name__ == "__main__":
     fig_sigmoid_bce()
     fig_normal_mse()
     fig_softmax()
+    fig_regression_losses()
+    fig_classification_losses()
