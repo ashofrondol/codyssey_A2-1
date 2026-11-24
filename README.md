@@ -450,11 +450,11 @@ uv run python docs/figures/make_figures.py
 
 **이 프로젝트에서 쓰는 곳**
 
-$$
+```math
 R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}
 \qquad
 R(45°) = \begin{bmatrix} 0.707 & -0.707 \\ 0.707 & 0.707 \end{bmatrix}
-$$
+```
 
 | 쓰는 곳 | 어떻게 쓰나 |
 |---|---|
@@ -470,9 +470,9 @@ tan은 이 프로젝트에 직접 나오지 않지만, "기울기 = 세로 ÷ �
 
 **내적(dot product)** 은 두 벡터의 같은 자리 성분끼리 곱한 뒤 모두 더한 **숫자 하나**다.
 
-$$
+```math
 (2, 3) \cdot (1000, 1500) = 2 \times 1000 + 3 \times 1500 = 6500
-$$
+```
 
 **의미 1, 가중합**: 사과 2개, 배 3개를 개당 1000원, 1500원에 사면 총액이 6500원이다. "각 항목에 **중요도(가중치)** 를 곱해서 합친 값"이 내적이다. 신경망의 뉴런 하나가 하는 계산이 바로 이것이다.
 
@@ -488,9 +488,9 @@ $$
 
 두 의미는 사실 하나의 식에서 나온다. 두 화살표 사이의 각도를 θ라 하면
 
-$$
+```math
 \mathbf{a} \cdot \mathbf{b} = \lVert \mathbf{a} \rVert \times \underbrace{\lVert \mathbf{b} \rVert \cos\theta}_{\text{b의 그림자 길이}}
-$$
+```
 
 이다. 햇빛이 a에 수직으로 내리쬔다고 생각하면, b가 a 위에 드리우는 **그림자 길이**가 $\lVert \mathbf{b} \rVert \cos\theta$ 다. 내적은 "a의 길이 × 그 그림자 길이"다. 그림자가 a와 같은 쪽이면 양수, 직각이면 그림자가 없어서 0, 반대쪽이면 음수가 된다. cos는 바로 위 [5) 삼각함수](#5-삼각함수-sin-cos-tan)에서 본 "가로 위치(그림자)"다. 각도가 0도면 1, 90도면 0, 180도면 −1이다.
 
@@ -500,9 +500,9 @@ $$
 
 **쓰임 1, 뉴런의 계산 (4장)**: 뉴런은 입력 x와 가중치 w의 내적에 편향 b를 더한다. w = (0.5, −1), x = (2, 1), b = 0.3이면
 
-$$
+```math
 z = \mathbf{w} \cdot \mathbf{x} + b = 0.5 \times 2 + (-1) \times 1 + 0.3 = 0.3
-$$
+```
 
 가중치가 큰 입력일수록 결과에 많이 반영된다. 즉 내적은 "어떤 입력을 얼마나 중요하게 볼지"를 계산하는 방법이고, 학습은 이 가중치를 고치는 일이다.
 
@@ -516,10 +516,10 @@ $$
 
 내적이 클수록 같은 방향, 즉 비슷한 취향이다. 다만 내적은 점수를 크게 매기는 사람일수록 커지므로, 두 벡터의 길이로 나눠 **방향만 비교**한 값을 많이 쓴다. 이것이 **코사인 유사도(cosine similarity)** 다.
 
-$$
+```math
 \text{코사인 유사도} = \frac{\mathbf{a} \cdot \mathbf{b}}{\lVert \mathbf{a} \rVert \, \lVert \mathbf{b} \rVert}
 = \frac{40}{6.48 \times 6.40} \approx 0.96
-$$
+```
 
 1이면 완전히 같은 방향, 0이면 무관, −1이면 정반대다. 넷플릭스 같은 추천, 검색 엔진에서 "질문과 비슷한 문서 찾기", 단어를 벡터로 바꾼 **임베딩(embedding)** 에서 "왕과 여왕이 비슷한 단어인가" 판단이 모두 이 계산이다. ChatGPT 같은 언어 모델의 핵심 부품인 **어텐션(attention)** 도 "지금 단어와 다른 단어들이 얼마나 관련 있는가"를 내적으로 잰다.
 
@@ -533,27 +533,27 @@ $$
 
 **행렬 × 벡터는 "가중합 여러 개를 한 번에"** 하는 계산이다. 가게 두 곳의 가격표로 같은 장바구니(사과 2, 배 3)의 총액을 구해 보자. 행렬의 가로줄 하나가 가게 하나의 가격표(사과, 배)이고, 각 가로줄과 장바구니 벡터의 내적이 그 가게의 총액이다.
 
-$$
+```math
 \begin{bmatrix} 1000 & 1500 \\ 1200 & 1300 \end{bmatrix}
 \begin{bmatrix} 2 \\ 3 \end{bmatrix}
 =
 \begin{bmatrix} 1000 \times 2 + 1500 \times 3 \\ 1200 \times 2 + 1300 \times 3 \end{bmatrix}
 =
 \begin{bmatrix} 6500 \\ 6300 \end{bmatrix}
-$$
+```
 
 **행렬 × 행렬의 규칙**은 하나뿐이다.
 
 > 결과의 **i행 j열** = 왼쪽 행렬의 **i번째 가로줄** 과 오른쪽 행렬의 **j번째 세로줄** 의 내적
 
-$$
+```math
 \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}
 \begin{bmatrix} 5 & 6 \\ 7 & 8 \end{bmatrix}
 =
 \begin{bmatrix} 1 \times 5 + 2 \times 7 & 1 \times 6 + 2 \times 8 \\ 3 \times 5 + 4 \times 7 & 3 \times 6 + 4 \times 8 \end{bmatrix}
 =
 \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix}
-$$
+```
 
 - 오른쪽 행렬은 **위에서 아래로** 읽는다. 1번 세로줄은 (5, 7)이다.
 - 가로줄 길이와 세로줄 길이가 **같아야** 곱할 수 있다. (2×**3**) × (**3**×4)처럼 안쪽 숫자가 같아야 하고, 결과는 바깥쪽 숫자인 2×4가 된다.
@@ -574,7 +574,7 @@ $$
 
 **이유 1, 뉴런 여러 개를 한 번에 (4장)**: 은닉층 뉴런이 2개면 내적이 2번 필요하다. 각 뉴런의 가중치를 가로줄로 쌓아 행렬 $W_1$ 을 만들면, 두 내적이 $W_1 \mathbf{x}$ 한 번으로 끝난다. 위의 "가게 두 곳의 총액"과 같은 구조다.
 
-$$
+```math
 \underbrace{\begin{bmatrix} 0.5 & -1 \\ 0.2 & 0.8 \end{bmatrix}}_{\text{뉴런1, 뉴런2의 가중치}}
 \begin{bmatrix} 2 \\ 1 \end{bmatrix}
 =
@@ -582,13 +582,13 @@ $$
 =
 \begin{bmatrix} 0 \\ 1.2 \end{bmatrix}
 \leftarrow \text{뉴런1, 뉴런2의 결과}
-$$
+```
 
 손글씨 숫자 사진(28×28 = 784픽셀)을 뉴런 128개에 넣으면 내적이 128번, 곱셈이 약 10만 번이다. 이것을 `W @ x` 한 줄로 쓴다.
 
 **이유 2, 데이터 여러 개를 한 번에 (3장 미니배치)**: 사진 32장을 가로줄로 쌓아 행렬 X(32×784)를 만들면 `X @ W.T` 한 번으로 32장의 결과가 모두 나온다. 3장의 "미니배치 GD"가 데이터를 묶어서 처리하는 것이 이 계산이다.
 
-**이유 3, 변환을 이어 붙이기 (2장)**: "45도 돌린 다음 가로로 2배 늘이기"는 늘이기 행렬 S와 회전 행렬 R을 곱한 **행렬 하나** $SR$ 로 바꿀 수 있다. 오른쪽부터 적용되므로 순서가 중요하다($SR \neq RS$). 이 성질에서 중요한 사실이 하나 나온다. 신경망 층 두 개 $W_2(W_1 \mathbf{x})$ 는 $(W_2 W_1)\mathbf{x}$, 즉 **층 하나와 똑같아진다.** 층을 아무리 쌓아도 행렬 하나로 줄어들기 때문에, 층 사이에 **활성화 함수**(4장)를 넣어 이 합쳐짐을 막아야 깊은 신경망이 의미가 있다.
+**이유 3, 변환을 이어 붙이기 (2장)**: "45도 돌린 다음 가로로 2배 늘이기"는 늘이기 행렬 S와 회전 행렬 R을 곱한 **행렬 하나** $SR$ 로 바꿀 수 있다. 오른쪽부터 적용되므로 순서가 중요하다($SR \neq RS$). 이 성질에서 중요한 사실이 하나 나온다. 신경망 층 두 개 $`W_2(W_1 \mathbf{x})`$ 는 $`(W_2 W_1)\mathbf{x}`$, 즉 **층 하나와 똑같아진다.** 층을 아무리 쌓아도 행렬 하나로 줄어들기 때문에, 층 사이에 **활성화 함수**(4장)를 넣어 이 합쳐짐을 막아야 깊은 신경망이 의미가 있다.
 
 **덤, 계산 속도**: GPU(그래픽 카드)는 수천 개의 곱셈을 동시에 하도록 만들어진 장치라서 행렬 곱을 매우 빠르게 계산한다. 딥러닝 계산의 대부분이 행렬 곱이라서, 계산을 행렬 곱으로 묶어 쓰는 것이 곧 학습 속도다.
 
@@ -617,9 +617,9 @@ $$
 
 $e^x$ 의 가장 중요한 성질은 **어느 점에서나 높이와 기울기가 같다**는 것이다.
 
-$$
+```math
 \frac{d}{dx} e^x = e^x
-$$
+```
 
 x = 1에서 높이가 2.72이면 기울기도 2.72다. 2의 거듭제곱 $2^x$ 는 x = 0에서 기울기가 약 0.69, $3^x$ 는 약 1.10이다. 그 사이에서 기울기가 **정확히 1**이 되는 밑이 e(2.718...)다. 그래서 e를 밑으로 쓰면 미분할 때 지저분한 숫자가 붙지 않는다.
 
@@ -630,7 +630,7 @@ x = 1에서 높이가 2.72이면 기울기도 2.72다. 2의 거듭제곱 $2^x$ �
 | 쓰는 곳 | 식 | e가 필요한 이유 |
 |---|---|---|
 | sigmoid (4장) | $\sigma(z) = \frac{1}{1 + e^{-z}}$ | 어떤 수든 0~1로 부드럽게 눌러 준다. 미분이 $\sigma(1 - \sigma)$ 로 깔끔해서 역전파 계산이 쉽다 |
-| softmax (4장, 5장) | $\frac{e^{z_i}}{\sum_j e^{z_j}}$ | $e^z$ 는 **항상 양수**라서 음수 점수도 확률(0 이상)로 바꿀 수 있다. 점수 순서도 그대로 유지된다 |
+| softmax (4장, 5장) | $`\frac{e^{z_i}}{\sum_j e^{z_j}}`$ | $e^z$ 는 **항상 양수**라서 음수 점수도 확률(0 이상)로 바꿀 수 있다. 점수 순서도 그대로 유지된다 |
 | 정규분포 (5장) | $e^{-\frac{(x-\mu)^2}{2\sigma^2}}$ | 로그를 씌우면 e가 사라지고 **제곱**만 남는다. 이것이 MSE가 나오는 이유다 |
 | 자연로그 ln | e를 밑으로 하는 로그 | e와 짝이라 $\log(e^z) = z$ 로 서로 지워진다. 미분도 $\frac{1}{x}$ 로 깔끔하다 |
 
@@ -650,15 +650,15 @@ x = 1에서 높이가 2.72이면 기울기도 2.72다. 2의 거듭제곱 $2^x$ �
 
 ### 9) Σ (서메이션): 합 기호
 
-**이름**: Σ는 그리스 문자 **대문자 시그마**다. 영어 Sum의 S에 해당하는 글자라서 "더하기" 기호로 쓰인다. 기호로서의 이름은 **summation**(서메이션)이고, 한국어로는 **합 기호**라고 한다. 고등학교에서는 흔히 "시그마"라고 부르지만, 이 문서에는 소문자 **σ**(시그마)가 sigmoid, 특이값, 표준편차의 뜻으로 따로 나온다. 둘을 말로 구분하기 위해 **Σ는 "서메이션" 또는 "합 기호"** 라고 부르는 편이 명확하다. 영어로는 $\sum_{i=1}^{n} x_i$ 를 "the sum of $x_i$ from i = 1 to n"처럼 읽는다. 마찬가지로 모두 곱하라는 기호 **Π**(대문자 파이)는 원주율 π와 구분하려고 "프로덕트(product)"라고 부른다(5장).
+**이름**: Σ는 그리스 문자 **대문자 시그마**다. 영어 Sum의 S에 해당하는 글자라서 "더하기" 기호로 쓰인다. 기호로서의 이름은 **summation**(서메이션)이고, 한국어로는 **합 기호**라고 한다. 고등학교에서는 흔히 "시그마"라고 부르지만, 이 문서에는 소문자 **σ**(시그마)가 sigmoid, 특이값, 표준편차의 뜻으로 따로 나온다. 둘을 말로 구분하기 위해 **Σ는 "서메이션" 또는 "합 기호"** 라고 부르는 편이 명확하다. 영어로는 $`\sum_{i=1}^{n} x_i`$ 를 "the sum of $x_i$ from i = 1 to n"처럼 읽는다. 마찬가지로 모두 곱하라는 기호 **Π**(대문자 파이)는 원주율 π와 구분하려고 "프로덕트(product)"라고 부른다(5장).
 
 $\sum$ 는 "모두 더하라"는 기호다. 아래와 위에 적힌 숫자는 "몇 번부터 몇 번까지"라는 뜻이다.
 
-$$
+```math
 \sum_{i=1}^{3} x_i = x_1 + x_2 + x_3
-$$
+```
 
-x = (2, 5, 8)이면 2 + 5 + 8 = 15다. 여기서 $x_i$ 의 작은 글자 i는 "i번째"를 뜻하는 번호(**인덱스, index**)다. 평균은 $\frac{1}{n}\sum_{i=1}^{n} x_i$ 로 쓴다. 다 더해서 개수로 나눈다는 뜻이다.
+x = (2, 5, 8)이면 2 + 5 + 8 = 15다. 여기서 $x_i$ 의 작은 글자 i는 "i번째"를 뜻하는 번호(**인덱스, index**)다. 평균은 $`\frac{1}{n}\sum_{i=1}^{n} x_i`$ 로 쓴다. 다 더해서 개수로 나눈다는 뜻이다.
 
 ### 10) 손실 함수: MSE부터
 
@@ -670,9 +670,9 @@ x = (2, 5, 8)이면 2 + 5 + 8 = 15다. 여기서 $x_i$ 의 작은 글자 i는 "i
 2. **Squared (제곱)**: 오차를 제곱
 3. **Mean (평균)**: 다 더해서 개수로 나눔
 
-$$
+```math
 \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
-$$
+```
 
 ($y_i$ 는 i번째 정답, $\hat{y}_i$ 는 i번째 예측, Σ는 바로 위 9)의 합 기호다.)
 
@@ -767,9 +767,9 @@ f(x) = x² 그래프 상에서
 
 이를 식과 맞춰보면
 
-$$
+```math
 \frac{f(x+h) - f(x)}{h}
-$$
+```
 
 이를 자연어로 풀어보면
 
@@ -797,9 +797,9 @@ h가 작아질수록 기울기가 6에 수렴한다.
 
 즉, 두 번째 점이 가까워질수록( $h \to 0$ ) (3, 9)와 두 번째 점을 지나는 **할선**의 기울기는, 곡선 y = x²에 (3, 9) 한 점에서만 닿는 **접선**의 기울기에 가까워진다. 이 극한값이 미분이다.
 
-$$
+```math
 f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}
-$$
+```
 
 $\lim_{h \to 0}$ 은 "h를 0에 **한없이 가깝게** 할 때 값이 다가가는 곳"이라는 뜻이고, 이 다가가는 값을 **극한(limit)** 이라 한다.
 
@@ -837,16 +837,16 @@ $\lim_{h \to 0}$ 은 "h를 0에 **한없이 가깝게** 할 때 값이 다가가
 
 위에서 계산한 방식은 x에서 **앞쪽(오른쪽)** 으로 h만큼 간 점을 사용했다. 이를 **전방차분(前方差分, forward difference)** 이라 한다.
 
-$$
+```math
 \text{forward difference} = \frac{f(x+h)-f(x)}{h}
-$$
+```
 
 전방차분이 있다면 후방차분(backward difference)도 있지 않을까?
 전방차분은 오른쪽에 점을 찍어 기울기를 구했으니, **왼쪽**에 점을 찍어 기울기를 구할 수도 있을 것이다.
 
-$$
+```math
 \text{backward difference} = \frac{f(x)-f(x-h)}{h}
-$$
+```
 
 두 식 모두 **"오른쪽 점의 높이 − 왼쪽 점의 높이"를 "오른쪽 x − 왼쪽 x"로 나눈 것**이다. 다른 것은 두 번째 점을 오른쪽에 찍느냐, 왼쪽에 찍느냐뿐이다.
 
@@ -875,9 +875,9 @@ $$
 
 이 평균이 바로 **중심차분(central difference)** 이다. x를 가운데에 두고 양옆의 점 x − h와 x + h를 잇는다.
 
-$$
+```math
 \text{central difference} = \frac{1}{2}\left(\frac{f(x+h)-f(x)}{h} + \frac{f(x)-f(x-h)}{h}\right) = \frac{f(x+h)-f(x-h)}{2h}
-$$
+```
 
 분모가 2h인 이유는 두 점 x − h와 x + h 사이의 가로 거리가 2h이기 때문이다.
 
@@ -899,9 +899,9 @@ $$
 
 **x²에서 중심차분이 정확한 이유**: 식을 직접 풀어 보면
 
-$$
+```math
 \frac{(x+h)^2 - (x-h)^2}{2h} = \frac{(x^2 + 2xh + h^2) - (x^2 - 2xh + h^2)}{2h} = \frac{4xh}{2h} = 2x
-$$
+```
 
 $h^2$ 이 서로 지워져서 h가 남지 않는다. 그래서 x²에서는 어떤 h를 써도 정확히 2x(x = 3이면 6)가 나온다. 포물선은 좌우가 대칭이라, 양옆의 두 점을 잇는 할선이 접선과 **정확히 평행**하기 때문이다.
 
@@ -945,21 +945,15 @@ f(x) = x²는 위에서 본 것처럼 특별한 경우라서 중심차분이 h�
 
 f(x+h)와 f(x−h)를 테일러 전개하면
 
-$$
-f(x \pm h) = f(x) \pm h f'(x) + \frac{h^2}{2} f''(x) \pm \frac{h^3}{6} f'''(x) + O(h^4)
-$$
+$`\displaystyle f(x \pm h) = f(x) \pm h f'(x) + \frac{h^2}{2} f''(x) \pm \frac{h^3}{6} f'''(x) + O(h^4)`$
 
 전방차분은
 
-$$
-\frac{f(x+h)-f(x)}{h} = f'(x) + \frac{h}{2} f''(x) + O(h^2)
-$$
+$`\displaystyle \frac{f(x+h)-f(x)}{h} = f'(x) + \frac{h}{2} f''(x) + O(h^2)`$
 
 이므로 오차가 $O(h)$ 이다 (1차 정확도). 중심차분은 두 전개식을 빼면 짝수 차수 항이 상쇄되어
 
-$$
-\frac{f(x+h)-f(x-h)}{2h} = f'(x) + \frac{h^2}{6} f'''(x) + O(h^4)
-$$
+$`\displaystyle \frac{f(x+h)-f(x-h)}{2h} = f'(x) + \frac{h^2}{6} f'''(x) + O(h^4)`$
 
 오차가 $O(h^2)$ 이다 (2차 정확도). f(x) = x²는 $f''' = 0$ 이라 절단 오차가 0이다.
 
@@ -974,9 +968,9 @@ $$
 - **편미분** $\frac{\partial f}{\partial x}$ : y는 고정하고 x 방향으로만 움직였을 때의 기울기
 - **Gradient** $\nabla f$ : 각 방향의 편미분을 모은 벡터
 
-$$
+```math
 \nabla f(x, y) = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y} \right)
-$$
+```
 
 Gradient는 **그 지점에서 가장 가파르게 올라가는 방향**을 가리키고, 그 길이는 얼마나 가파른지를 나타낸다.
 
@@ -1035,9 +1029,9 @@ Gradient는 **그 지점에서 가장 가파르게 올라가는 방향**을 가�
 
 ② **기록한 기울기를 거꾸로 곱한다** (역전파)
 
-$$
+```math
 \frac{df}{dx} = \frac{df}{du} \times \frac{du}{dx} = 6 \times 2 = 12
-$$
+```
 
 해석적 미분으로 확인하면 $f(x) = (2x+1)^2 = 4x^2 + 4x + 1$ 이므로 기울기는 $8x + 4$ 이고, x = 1에서 12다. 결과가 같다. 신경망에서 이 과정을 하는 것이 4장의 **역전파**다. 즉 **역전파는 자동 미분의 한 종류**다.
 
@@ -1135,12 +1129,12 @@ flowchart LR
 
 2×2 행렬 A에 2차원 점 (x, y)를 곱하면 새로운 점이 나온다.
 
-$$
+```math
 \begin{bmatrix} a & b \\ c & d \end{bmatrix}
 \begin{bmatrix} x \\ y \end{bmatrix}
 =
 \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix}
-$$
+```
 
 점 하나가 아니라 **모든 점**에 같은 행렬을 곱하면, 공간 전체가 한꺼번에 변형된다.
 
@@ -1161,17 +1155,17 @@ $$
 
 | 변환 | 행렬 | 하는 일 | det |
 |---|---|---|---|
-| 회전 R(θ) | $\begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}$ | 원점을 중심으로 θ만큼 돌린다 | 1 |
-| 스케일링 S(sx, sy) | $\begin{bmatrix} s_x & 0 \\ 0 & s_y \end{bmatrix}$ | 가로로 sx배, 세로로 sy배 늘인다 | sx × sy |
-| 전단 Sh(k) | $\begin{bmatrix} 1 & k \\ 0 & 1 \end{bmatrix}$ | 위로 갈수록 오른쪽으로 밀어 기울인다 | 1 |
+| 회전 R(θ) | $`\begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}`$ | 원점을 중심으로 θ만큼 돌린다 | 1 |
+| 스케일링 S(sx, sy) | $`\begin{bmatrix} s_x & 0 \\ 0 & s_y \end{bmatrix}`$ | 가로로 sx배, 세로로 sy배 늘인다 | sx × sy |
+| 전단 Sh(k) | $`\begin{bmatrix} 1 & k \\ 0 & 1 \end{bmatrix}`$ | 위로 갈수록 오른쪽으로 밀어 기울인다 | 1 |
 
 ### 행렬식(det)은 넓이가 몇 배가 되었는가
 
 2×2 행렬의 행렬식은 다음과 같다.
 
-$$
+```math
 \det \begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc
-$$
+```
 
 그림에서 넓이 1인 파란 정사각형이 변환 후 넓이가 얼마가 되었는지 보면, 그 값이 바로 **|det|** 이다.
 
@@ -1185,11 +1179,11 @@ $$
 
 ### 도형의 넓이는 어떻게 계산하나: 신발끈 공식
 
-변환 전후 도형의 넓이를 비교하려면 넓이를 계산해야 한다. 단위 원은 점 100개를 이은 다각형으로 표현하므로, 다각형의 넓이 공식인 **신발끈 공식(shoelace formula)** 을 쓴다. 꼭짓점이 순서대로 $(x_1, y_1), \dots, (x_n, y_n)$ 일 때
+변환 전후 도형의 넓이를 비교하려면 넓이를 계산해야 한다. 단위 원은 점 100개를 이은 다각형으로 표현하므로, 다각형의 넓이 공식인 **신발끈 공식(shoelace formula)** 을 쓴다. 꼭짓점이 순서대로 $`(x_1, y_1), \dots, (x_n, y_n)`$ 일 때
 
-$$
+```math
 \text{넓이} = \frac{1}{2} \left| \sum_{i=1}^{n} \left( x_i \, y_{i+1} - x_{i+1} \, y_i \right) \right|, \quad (x_{n+1}, y_{n+1}) = (x_1, y_1)
-$$
+```
 
 꼭짓점 좌표를 엇갈려 곱하는 모양이 신발끈을 묶는 모양과 닮아서 붙은 이름이다. NumPy에서는 `np.roll`로 "다음 꼭짓점" 배열을 쉽게 만들 수 있다.
 
@@ -1197,9 +1191,9 @@ $$
 
 행렬을 곱하면 대부분의 화살표는 **방향이 바뀐다.** 그런데 어떤 특별한 화살표는 변환 후에도 **같은 직선 위에 남고 길이만 변한다.** 이 화살표를 **고유벡터**, 길이가 변하는 배율을 **고유값**이라 한다.
 
-$$
+```math
 A \mathbf{v} = \lambda \mathbf{v}
-$$
+```
 
 - $\mathbf{v}$ : 고유벡터 (방향이 유지되는 화살표)
 - $\lambda$ : 고유값 (그 방향으로 몇 배 늘어나는가)
@@ -1218,9 +1212,9 @@ $$
 
 고유벡터 $\mathbf{v}$ 에 행렬 A를 한 번 곱하면 λ배가 된다. 두 번 곱하면 λ × λ = λ²배, n번 곱하면 **λⁿ배**다.
 
-$$
+```math
 A \mathbf{v} = \lambda \mathbf{v} \quad\Rightarrow\quad A^n \mathbf{v} = \lambda^n \mathbf{v}
-$$
+```
 
 일반 벡터에 행렬을 100번 곱하려면 행렬 곱을 100번 해야 하지만, 고유벡터 방향으로는 **숫자 λ를 100번 곱하기만** 하면 된다. 그리고 결과는 λ의 크기만 보면 바로 알 수 있다.
 
@@ -1243,10 +1237,10 @@ $$
 
 이 규칙을 행렬로 쓰면 "오늘의 (맑을 확률, 비 올 확률)"에 행렬을 곱해서 "내일의 확률"을 얻는다.
 
-$$
+```math
 P = \begin{bmatrix} 0.9 & 0.5 \\ 0.1 & 0.5 \end{bmatrix}, \qquad
 \begin{bmatrix} \text{내일 맑음} \\ \text{내일 비} \end{bmatrix} = P \begin{bmatrix} \text{오늘 맑음} \\ \text{오늘 비} \end{bmatrix}
-$$
+```
 
 첫날이 맑았다면 (1, 0)에서 시작해 날마다 P를 곱한다.
 
@@ -1307,7 +1301,7 @@ $$
 1. 임의의 벡터 $\mathbf{v}_0$ 에서 시작한다.
 2. $\mathbf{w} = A \mathbf{v}_k$ 를 계산한다.
 3. 길이가 무한히 커지거나 작아지지 않도록 정규화한다: $\mathbf{v}_{k+1} = \mathbf{w} / \lVert \mathbf{w} \rVert$
-4. 고유값을 추정한다: $\lambda \approx \mathbf{v}_{k+1}^{\top} A \, \mathbf{v}_{k+1}$ (레일리 몫, Rayleigh quotient)
+4. 고유값을 추정한다: $`\lambda \approx \mathbf{v}_{k+1}^{\top} A \, \mathbf{v}_{k+1}`$ (레일리 몫, Rayleigh quotient)
 5. λ의 변화가 허용 오차(예: 1e-6)보다 작아질 때까지 2~4를 반복한다.
 
 4번이 성립하는 이유: $\mathbf{v}$ 가 고유벡터이고 길이가 1이면 $\mathbf{v}^{\top} A \mathbf{v} = \mathbf{v}^{\top} (\lambda \mathbf{v}) = \lambda \lVert \mathbf{v} \rVert^2 = \lambda$ 이기 때문이다.
@@ -1315,13 +1309,11 @@ $$
 <details>
 <summary><b>더 깊이 보기 (전공자용): 수렴 속도와 주의점</b></summary>
 
-초기 벡터를 고유벡터의 선형결합 $\mathbf{v}_0 = c_1 \mathbf{u}_1 + c_2 \mathbf{u}_2$ 로 쓰면 ($|\lambda_1| > |\lambda_2|$)
+초기 벡터를 고유벡터의 선형결합 $`\mathbf{v}_0 = c_1 \mathbf{u}_1 + c_2 \mathbf{u}_2`$ 로 쓰면 ($`|\lambda_1| > |\lambda_2|`$)
 
-$$
-A^k \mathbf{v}_0 = \lambda_1^k \left( c_1 \mathbf{u}_1 + c_2 \left( \frac{\lambda_2}{\lambda_1} \right)^k \mathbf{u}_2 \right)
-$$
+$`\displaystyle A^k \mathbf{v}_0 = \lambda_1^k \left( c_1 \mathbf{u}_1 + c_2 \left( \frac{\lambda_2}{\lambda_1} \right)^k \mathbf{u}_2 \right)`$
 
-이므로 반복마다 오차가 $|\lambda_2 / \lambda_1|$ 배씩 줄어든다. 두 고유값이 비슷할수록 느리게 수렴한다.
+이므로 반복마다 오차가 $`|\lambda_2 / \lambda_1|`$ 배씩 줄어든다. 두 고유값이 비슷할수록 느리게 수렴한다.
 
 주의할 점
 
@@ -1336,24 +1328,24 @@ $$
 
 **특이값 분해(SVD, Singular Value Decomposition)** 는 어떤 행렬이든 세 행렬의 곱으로 분해한다.
 
-$$
+```math
 A = U \Sigma V^{\top}
-$$
+```
 
 - $U$, $V$ : 회전(방향)을 나타내는 행렬
-- $\Sigma$ : 대각선에 **특이값** $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$ 이 크기순으로 놓인 행렬. 각 특이값은 그 성분이 얼마나 중요한지를 나타낸다.
+- $\Sigma$ : 대각선에 **특이값** $`\sigma_1 \ge \sigma_2 \ge \dots \ge 0`$ 이 크기순으로 놓인 행렬. 각 특이값은 그 성분이 얼마나 중요한지를 나타낸다.
 
 **직관**: 이미지(행렬)를 "간단한 무늬 조각"들의 합으로 표현한다고 생각하자. 특이값이 큰 조각일수록 이미지의 큰 구조를 담고, 작은 조각은 세부 잡음을 담는다.
 
-$$
+```math
 A = \sigma_1 \mathbf{u}_1 \mathbf{v}_1^{\top} + \sigma_2 \mathbf{u}_2 \mathbf{v}_2^{\top} + \dots
-$$
+```
 
 앞의 **k개만 남기고** 나머지를 버리면 압축된 근사 이미지가 된다.
 
-$$
+```math
 A_k = \sum_{i=1}^{k} \sigma_i \, \mathbf{u}_i \mathbf{v}_i^{\top} = U_{:, :k} \, \Sigma_{:k, :k} \, V^{\top}_{:k, :}
-$$
+```
 
 ![SVD 근사](docs/figures/fig08_svd_rank.png)
 
@@ -1364,7 +1356,7 @@ $$
 <details>
 <summary><b>더 깊이 보기 (전공자용): 최적성과 rank의 한계</b></summary>
 
-**Eckart–Young 정리**: 모든 rank-k 행렬 중에서 $A_k$ 가 원본과의 프로베니우스 노름 오차 $\lVert A - A_k \rVert_F$ 를 최소화한다. 그 오차는 $\sqrt{\sigma_{k+1}^2 + \dots + \sigma_r^2}$ 이다. 즉 SVD 절단은 "가장 좋은" 저랭크 근사다.
+**Eckart–Young 정리**: 모든 rank-k 행렬 중에서 $A_k$ 가 원본과의 프로베니우스 노름 오차 $`\lVert A - A_k \rVert_F`$ 를 최소화한다. 그 오차는 $`\sqrt{\sigma_{k+1}^2 + \dots + \sigma_r^2}`$ 이다. 즉 SVD 절단은 "가장 좋은" 저랭크 근사다.
 
 $A^{\top}A$ 의 고유값은 $\sigma_i^2$ 이고 고유벡터는 $V$ 의 열이다. 그래서 SVD는 고유값 분해와 밀접하게 연결되어 있고, PCA는 데이터 공분산 행렬의 고유값 분해(= 중심화된 데이터 행렬의 SVD)다.
 
@@ -1455,9 +1447,9 @@ Matplotlib에 들어 있는 공개 샘플 사진(`grace_hopper.jpg`)을 가운�
 
 손실 함수 f를 가장 작게 만드는 위치(가중치) θ를 찾는다. 1장에서 gradient는 **가장 가파르게 오르는 방향**이었다. 그러니 그 **반대 방향**으로 가면 가장 가파르게 내려간다.
 
-$$
+```math
 \theta_{t+1} = \theta_t - \eta \, \nabla f(\theta_t)
-$$
+```
 
 - $\theta_t$ : t번째 걸음에서의 현재 위치
 - $\nabla f(\theta_t)$ : 현재 위치의 gradient (오르막 방향)
@@ -1535,9 +1527,9 @@ for step in range(1000):     # 정해 둔 횟수까지
 
 f(x) = x²에서 생각해 보자. gradient는 2x이므로 한 번 업데이트하면
 
-$$
+```math
 x_{t+1} = x_t - \eta \cdot 2 x_t = (1 - 2\eta) \, x_t
-$$
+```
 
 즉 매 걸음마다 x에 **(1 − 2η)를 곱하는 것**과 같다.
 
@@ -1559,9 +1551,9 @@ $$
 
 지금까지는 손실 함수가 x² + y²처럼 식으로 주어졌다. 머신러닝에서는 손실이 **데이터로부터** 계산된다. 데이터를 모두 써서 gradient를 계산하는 것이 가장 직접적인 방법이다. 실제 손실 함수는 데이터 N개 각각의 손실 $\ell_i$ 의 평균이다.
 
-$$
+```math
 L(\theta) = \frac{1}{N} \sum_{i=1}^{N} \ell_i(\theta), \qquad \nabla L(\theta) = \frac{1}{N} \sum_{i=1}^{N} \nabla \ell_i(\theta)
-$$
+```
 
 데이터가 100만 개라면 **한 걸음 내딛기 위해 100만 개를 모두 계산**해야 한다. 이 방식을 SGD와 구분할 때 **배치 경사하강법(Batch GD)** 또는 그냥 GD라고 부른다.
 
@@ -1578,9 +1570,9 @@ $$
 
 **SGD(Stochastic Gradient Descent, 확률적 경사하강법)** 는 매 걸음 데이터 중 **무작위로 B개만 뽑아서** gradient를 **추정**한다. 이 B개 묶음을 **미니배치(mini-batch)**, B를 **배치 크기(batch size)** 라 한다.
 
-$$
+```math
 \theta_{t+1} = \theta_t - \eta \, \frac{1}{B} \sum_{i \in \text{미니배치}} \nabla \ell_i(\theta_t)
-$$
+```
 
 **비유**: 전국 여론을 알고 싶을 때 5천만 명 전원에게 묻는 대신(GD), 무작위로 1000명만 뽑아 묻는 것(SGD)과 같다. 결과에 오차는 있지만 훨씬 빠르고, 여러 번 반복하면 평균적으로 정답 방향을 가리킨다.
 
@@ -1603,11 +1595,11 @@ $$
 
 f(x, y) = x² + 10y²처럼 한 방향이 다른 방향보다 훨씬 가파른 함수를 생각해 보자. 각 방향의 업데이트는
 
-$$
+```math
 x_{t+1} = (1 - 2\eta) \, x_t, \qquad y_{t+1} = (1 - 20\eta) \, y_t
-$$
+```
 
-- y 방향은 가파르기 때문에 η가 조금만 커도 $|1 - 20\eta| > 1$ 이 되어 발산한다. 그래서 η를 작게 써야 한다.
+- y 방향은 가파르기 때문에 η가 조금만 커도 $`|1 - 20\eta| > 1`$ 이 되어 발산한다. 그래서 η를 작게 써야 한다.
 - 그런데 η를 작게 하면 완만한 x 방향은 아주 느리게 움직인다.
 - 그 사이 값에서는 가파른 y 방향으로 **왔다 갔다(지그재그)** 하면서 x 방향으로는 조금씩만 나아간다.
 
@@ -1617,9 +1609,9 @@ $$
 
 경사하강법이 "매 걸음 발밑 경사만 보고 걷는 사람"이라면, Momentum은 **언덕을 굴러 내려가는 공**이다. 공은 이전에 움직이던 방향으로 계속 가려는 **관성(속도)** 을 가진다.
 
-$$
+```math
 v_{t+1} = \beta \, v_t + \nabla f(\theta_t), \qquad \theta_{t+1} = \theta_t - \eta \, v_{t+1}
-$$
+```
 
 - $v$ : 속도. 지난 gradient들을 누적한 값
 - $\beta$ : 관성의 세기 (보통 0.9). 이전 속도를 얼마나 유지할지 정한다.
@@ -1632,22 +1624,15 @@ $$
 <details>
 <summary><b>더 깊이 보기 (전공자용): 조건수, 표기 차이, Adam과 Newton</b> (쉬운 설명과 숫자 예시는 아래 "알고리즘별 수식 정리")</summary>
 
-**조건수**: 2차 함수 $f = \frac{1}{2}\theta^{\top} H \theta$ 에서 경사하강법이 안정하려면 $\eta < 2 / \lambda_{\max}(H)$ 여야 하고, 수렴 속도는 조건수 $\kappa = \lambda_{\max} / \lambda_{\min}$ 에 좌우된다. $f = x^2 + 10y^2$ 은 $H = \text{diag}(2, 20)$, $\kappa = 10$ 이다.
+**조건수**: 2차 함수 $f = \frac{1}{2}\theta^{\top} H \theta$ 에서 경사하강법이 안정하려면 $`\eta < 2 / \lambda_{\max}(H)`$ 여야 하고, 수렴 속도는 조건수 $`\kappa = \lambda_{\max} / \lambda_{\min}`$ 에 좌우된다. $f = x^2 + 10y^2$ 은 $H = \text{diag}(2, 20)$, $\kappa = 10$ 이다.
 
 **Momentum 표기**: $v \leftarrow \beta v - \eta \nabla f,\ \theta \leftarrow \theta + v$ 로 쓰는 표기도 있다. η가 상수이면 두 표기는 같은 경로를 만든다. 정상 상태에서 유효 학습률은 대략 $\eta / (1 - \beta)$, β = 0.9이면 10배다. 그래서 Momentum은 등방형 함수(x² + y²)에서는 오히려 지나쳐서 진동할 수 있다.
 
 **Adam (보너스)**: Momentum(1차 모멘트)과 RMSProp(2차 모멘트, 방향별 보폭 조절)을 결합한다.
 
-$$
-m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t, \quad
-s_t = \beta_2 s_{t-1} + (1-\beta_2) g_t^2
-$$
+$`\displaystyle m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t, \quad s_t = \beta_2 s_{t-1} + (1-\beta_2) g_t^2`$
 
-$$
-\hat{m}_t = \frac{m_t}{1-\beta_1^t}, \quad
-\hat{s}_t = \frac{s_t}{1-\beta_2^t}, \quad
-\theta_{t+1} = \theta_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{s}_t} + \epsilon}
-$$
+$`\displaystyle \hat{m}_t = \frac{m_t}{1-\beta_1^t}, \quad \hat{s}_t = \frac{s_t}{1-\beta_2^t}, \quad \theta_{t+1} = \theta_t - \eta \frac{\hat{m}_t}{\sqrt{\hat{s}_t} + \epsilon}`$
 
 **Newton Method (보너스)**: 2차 미분(Hessian)까지 사용해 $\theta \leftarrow \theta - H^{-1} \nabla f$ 로 업데이트한다. 2차 함수에서는 한 번에 최솟값에 도착하지만, 파라미터가 n개이면 n×n Hessian을 계산하고 역행렬을 구해야 해서 대규모 모델에서는 비용이 너무 크다.
 
@@ -1701,9 +1686,9 @@ $$
 
 #### 1) Vanilla GD (경사하강법)
 
-$$
+```math
 \theta_{t+1} = \theta_t - \eta \, \nabla f(\theta_t)
-$$
+```
 
 | 기호 | 뜻 |
 |---|---|
@@ -1720,13 +1705,13 @@ gradient가 큰 y 방향으로는 크게(1.0), 작은 x 방향으로는 조금�
 
 #### 2) SGD (확률적 경사하강법)
 
-$$
+```math
 \theta_{t+1} = \theta_t - \eta \, \underbrace{\frac{1}{B} \sum_{i \in \mathcal{B}_t} \nabla \ell_i(\theta_t)}_{\text{미니배치로 추정한 gradient}}
-$$
+```
 
 | 기호 | 뜻 |
 |---|---|
-| $\ell_i$ | i번째 데이터 하나의 손실. 전체 손실은 $L = \frac{1}{N}\sum_i \ell_i$ |
+| $\ell_i$ | i번째 데이터 하나의 손실. 전체 손실은 $`L = \frac{1}{N}\sum_i \ell_i`$ |
 | $\mathcal{B}_t$ | t번째 걸음에서 무작위로 뽑은 데이터 묶음 (미니배치) |
 | $B$ | 미니배치 크기 |
 
@@ -1745,9 +1730,9 @@ $$
 
 #### 3) Momentum
 
-$$
+```math
 v_{t+1} = \beta \, v_t + \nabla f(\theta_t), \qquad \theta_{t+1} = \theta_t - \eta \, v_{t+1}
-$$
+```
 
 | 기호 | 뜻 |
 |---|---|
@@ -1763,21 +1748,21 @@ $$
 
 #### 4) Adam (Adaptive Moment Estimation, 보너스)
 
-$$
+```math
 \begin{aligned}
 m_t &= \beta_1 m_{t-1} + (1 - \beta_1)\, g_t && \text{(gradient의 평균 = 방향, Momentum 역할)} \\
 s_t &= \beta_2 s_{t-1} + (1 - \beta_2)\, g_t^2 && \text{(gradient 제곱의 평균 = 방향별 크기)} \\
 \hat{m}_t &= \frac{m_t}{1 - \beta_1^t}, \quad \hat{s}_t = \frac{s_t}{1 - \beta_2^t} && \text{(처음에 0에서 시작한 치우침 보정)} \\
 \theta_{t+1} &= \theta_t - \eta \, \frac{\hat{m}_t}{\sqrt{\hat{s}_t} + \epsilon}
 \end{aligned}
-$$
+```
 
 | 기호 | 뜻 |
 |---|---|
 | $g_t$ | t번째 걸음의 gradient |
 | $m_t$ | gradient의 이동 평균 (1차 모멘트). "평균적으로 어느 쪽인가" |
 | $s_t$ | gradient **제곱**의 이동 평균 (2차 모멘트). "그 방향의 기울기가 평소에 얼마나 큰가" |
-| $\beta_1, \beta_2$ | 이동 평균의 관성 (보통 0.9, 0.999) |
+| $`\beta_1, \beta_2`$ | 이동 평균의 관성 (보통 0.9, 0.999) |
 | $\epsilon$ | 0으로 나누지 않도록 더하는 아주 작은 수 (1e-8) |
 | $g_t^2$, $\sqrt{\cdot}$, ÷ | 모두 **성분별로** 계산한다 |
 
@@ -1786,22 +1771,22 @@ $$
 | 단계 | x 방향 | y 방향 |
 |---|---|---|
 | gradient $g_1$ | 10 | 100 |
-| $m_1 = 0.1 \times g_1$ | 1 | 10 |
-| $s_1 = 0.001 \times g_1^2$ | 0.1 | 10 |
-| $\hat{m}_1 = m_1 / (1 - 0.9)$ | 10 | 100 |
-| $\hat{s}_1 = s_1 / (1 - 0.999)$ | 100 | 10000 |
+| $`m_1 = 0.1 \times g_1`$ | 1 | 10 |
+| $`s_1 = 0.001 \times g_1^2`$ | 0.1 | 10 |
+| $`\hat{m}_1 = m_1 / (1 - 0.9)`$ | 10 | 100 |
+| $`\hat{s}_1 = s_1 / (1 - 0.999)`$ | 100 | 10000 |
 | $\sqrt{\hat{s}_1}$ | 10 | 100 |
-| $\hat{m}_1 / \sqrt{\hat{s}_1}$ | **1** | **1** |
+| $`\hat{m}_1 / \sqrt{\hat{s}_1}`$ | **1** | **1** |
 | 이동량 $0.5 \times 1$ | 0.5 | 0.5 |
 
 새 위치는 $(5 - 0.5,\ 5 - 0.5) = (4.5,\ 4.5)$ 이다. GD는 gradient가 10배 큰 y 방향으로 10배 크게 움직였지만, Adam은 **각 방향의 gradient를 그 방향의 평소 크기로 나누므로** 두 방향 모두 같은 0.5만큼 움직인다. 가파른 방향은 보폭을 줄이고 완만한 방향은 키우는 셈이라, 길쭉한 골짜기에서 원점을 향해 거의 곧게 내려간다. 이렇게 방향마다 보폭을 따로 조절하는 것을 **적응적 학습률(adaptive learning rate)** 이라 한다. ($s_t$ 로 나누는 부분만 따로 쓰면 RMSProp이다.)
 
 #### 5) Newton Method (보너스)
 
-$$
+```math
 \theta_{t+1} = \theta_t - H(\theta_t)^{-1} \, \nabla f(\theta_t), \qquad
 H = \begin{bmatrix} \frac{\partial^2 f}{\partial x^2} & \frac{\partial^2 f}{\partial x \partial y} \\ \frac{\partial^2 f}{\partial y \partial x} & \frac{\partial^2 f}{\partial y^2} \end{bmatrix}
-$$
+```
 
 | 기호 | 뜻 |
 |---|---|
@@ -1810,11 +1795,11 @@ $$
 
 학습률 η가 없다. 휘어진 정도로 보폭을 자동으로 정하기 때문이다.
 
-**계산**: $f = x^2 + 10y^2$ 는 $\frac{\partial^2 f}{\partial x^2} = 2$, $\frac{\partial^2 f}{\partial y^2} = 20$, 나머지는 0이라 $H = \begin{bmatrix} 2 & 0 \\ 0 & 20 \end{bmatrix}$ 이다.
+**계산**: $f = x^2 + 10y^2$ 는 $\frac{\partial^2 f}{\partial x^2} = 2$, $\frac{\partial^2 f}{\partial y^2} = 20$, 나머지는 0이라 $`H = \begin{bmatrix} 2 & 0 \\ 0 & 20 \end{bmatrix}`$ 이다.
 
-$$
+```math
 H^{-1} \nabla f = \left( \frac{10}{2},\ \frac{100}{20} \right) = (5,\ 5), \qquad \theta_1 = (5, 5) - (5, 5) = (0,\ 0)
-$$
+```
 
 **한 걸음 만에 최솟값**에 도착했다. gradient(기울기)를 휘어진 정도(2차 미분)로 나누면 "이 기울기가 0이 되려면 얼마나 가야 하는가"가 나오기 때문이다. 1변수로 보면 $x^2$ 에서 x = 5의 기울기는 10, 휘어진 정도는 2이므로 10 ÷ 2 = 5만큼 가면 바닥이다. 2차 함수에서는 항상 한 걸음에 끝나고, 일반 함수에서도 최솟값 근처에서는 매우 빠르다. 대신 파라미터가 n개면 Hessian이 n × n개라서 계산이 매우 비싸다.
 
@@ -1825,7 +1810,7 @@ $$
 | Vanilla GD | $\theta - \eta \nabla f$ | 없음 | η | gradient 1번 (데이터 전체) | (4.9, 4.0) |
 | SGD | $\theta - \eta \nabla f_{\mathcal{B}}$ | 없음 | η, B | gradient 1번 (데이터 B개) | 미니배치에 따라 흔들림 |
 | Momentum | $v \leftarrow \beta v + \nabla f$, $\theta - \eta v$ | 속도 v | η, β | gradient 1번 | (4.9, 4.0), 이후 가속 |
-| Adam | $\theta - \eta\, \hat{m} / (\sqrt{\hat{s}} + \epsilon)$ | m, s, 걸음 수 t | η, β₁, β₂, ε | gradient 1번 + 성분별 계산 | (4.5, 4.5) |
+| Adam | $`\theta - \eta\, \hat{m} / (\sqrt{\hat{s}} + \epsilon)`$ | m, s, 걸음 수 t | η, β₁, β₂, ε | gradient 1번 + 성분별 계산 | (4.5, 4.5) |
 | Newton | $\theta - H^{-1} \nabla f$ | 없음 | 없음 | gradient + **Hessian + 연립방정식** | (0, 0) |
 
 코드는 `src/optimizer.py`의 `VanillaGD`, `SGD`, `Momentum`, `Adam`, `Newton` 클래스에 있고, 각 클래스의 `step()` 메서드가 위 업데이트 식을 그대로 옮긴 것이다.
@@ -1875,36 +1860,36 @@ flowchart LR
 
 **Momentum → Nesterov**: gradient를 구하는 **위치**만 다르다.
 
-$$
+```math
 \text{Momentum: } v \leftarrow \beta v + \nabla f(\theta), \qquad
 \text{Nesterov: } v \leftarrow \beta v + \nabla f(\underbrace{\theta - \eta\beta v}_{\text{관성으로 갈 곳}})
-$$
+```
 
 Momentum은 "지금 위치"의 기울기를 보고, Nesterov는 "관성으로 어차피 갈 곳"의 기울기를 미리 본다. 바닥을 지나칠 것 같으면 그곳의 기울기가 이미 반대를 가리키므로 **미리 브레이크**를 건다. (코드는 같은 효과를 내면서 현재 위치의 gradient만 쓰는 형태 $\theta \leftarrow \theta - \eta(g + \beta v)$ 로 구현했다.)
 
 **GD → AdaGrad**: 방향마다 지금까지 gradient 제곱의 **누적합** $G$ 로 나눈다.
 
-$$
+```math
 G \leftarrow G + g^2, \qquad \theta \leftarrow \theta - \eta \frac{g}{\sqrt{G} + \epsilon}
-$$
+```
 
 자주 크게 움직인 방향은 G가 커서 보폭이 작아지고, 드물게 움직인 방향은 보폭이 크다. 그래서 드물게 나오는 특성(희소 데이터)에 강하다. 하지만 G는 **더하기만 하므로 계속 커지고**, 보폭 $\eta/\sqrt{G}$ 는 결국 0에 가까워진다.
 
 **AdaGrad → RMSProp**: 누적합을 **이동 평균**으로 바꾼 것 하나뿐이다.
 
-$$
+```math
 \text{AdaGrad: } G \leftarrow G + g^2, \qquad
 \text{RMSProp: } s \leftarrow \rho\, s + (1 - \rho)\, g^2 \quad (\rho = 0.9)
-$$
+```
 
 이동 평균은 오래된 값을 점점 잊으므로(매 걸음 0.9배) 커지기만 하지 않는다. 그래서 보폭이 0으로 줄어들지 않는다. 이름의 RMS(Root Mean Square)는 "제곱의 평균에 제곱근"이라는 뜻으로, 분모 $\sqrt{s}$ 를 가리킨다.
 
 **RMSProp → Adam**: 분자의 $g$ 를 Momentum처럼 **이동 평균 $m$** 으로 바꾸고, 처음 몇 걸음의 치우침을 보정한다.
 
-$$
+```math
 \text{RMSProp: } \theta \leftarrow \theta - \eta \frac{g}{\sqrt{s} + \epsilon}, \qquad
 \text{Adam: } \theta \leftarrow \theta - \eta \frac{\hat{m}}{\sqrt{\hat{s}} + \epsilon}
-$$
+```
 
 이름 Adam(Adaptive **Moment** estimation)의 "모멘트"가 바로 이 $m$(1차 모멘트, 평균)과 $s$(2차 모멘트, 제곱의 평균)다.
 
@@ -1937,15 +1922,15 @@ $$
 
 #### 1) 이론: 2차 함수에서 학습률의 한계
 
-1변수 $f(x) = x^2$ 에서 GD는 매 걸음 x에 $(1 - 2\eta)$ 를 곱했다. 여기서 2는 $x^2$ 의 **휘어진 정도**(2차 미분)다. 일반적으로 휘어진 정도가 $\lambda$ 인 방향에서는 매 걸음 $(1 - \eta\lambda)$ 가 곱해진다. 변수가 여러 개면 방향마다 휘어진 정도가 다르고, 그 값들이 Hessian의 **고유값** $\lambda_{\min}, \dots, \lambda_{\max}$ 다(2장의 고유값이 여기서 다시 나온다).
+1변수 $f(x) = x^2$ 에서 GD는 매 걸음 x에 $(1 - 2\eta)$ 를 곱했다. 여기서 2는 $x^2$ 의 **휘어진 정도**(2차 미분)다. 일반적으로 휘어진 정도가 $\lambda$ 인 방향에서는 매 걸음 $(1 - \eta\lambda)$ 가 곱해진다. 변수가 여러 개면 방향마다 휘어진 정도가 다르고, 그 값들이 Hessian의 **고유값** $`\lambda_{\min}, \dots, \lambda_{\max}`$ 다(2장의 고유값이 여기서 다시 나온다).
 
-모든 방향에서 $|1 - \eta\lambda| < 1$ 이어야 수렴하므로, 결국 **가장 가파른 방향($\lambda_{\max}$)이 학습률의 상한을 정한다.**
+모든 방향에서 $`|1 - \eta\lambda| < 1`$ 이어야 수렴하므로, 결국 **가장 가파른 방향($\lambda_{\max}$)이 학습률의 상한을 정한다.**
 
 | 알고리즘 | 수렴 조건 (2차 함수) | 의미 |
 |---|---|---|
-| Vanilla GD / SGD | $0 < \eta < \dfrac{2}{\lambda_{\max}}$ | 가장 가파른 방향에서 튕겨 나가지 않을 만큼 |
-| Vanilla GD 최적값 | $\eta^* = \dfrac{2}{\lambda_{\min} + \lambda_{\max}}$ | 가장 완만한 방향과 가장 가파른 방향의 줄어드는 속도를 맞춘 값 |
-| Momentum (β) | $0 < \eta < \dfrac{2(1 + \beta)}{\lambda_{\max}}$ | 관성 때문에 GD보다 더 큰 학습률까지 버틴다 (β = 0.9면 약 1.9배) |
+| Vanilla GD / SGD | $`0 < \eta < \dfrac{2}{\lambda_{\max}}`$ | 가장 가파른 방향에서 튕겨 나가지 않을 만큼 |
+| Vanilla GD 최적값 | $`\eta^* = \dfrac{2}{\lambda_{\min} + \lambda_{\max}}`$ | 가장 완만한 방향과 가장 가파른 방향의 줄어드는 속도를 맞춘 값 |
+| Momentum (β) | $`0 < \eta < \dfrac{2(1 + \beta)}{\lambda_{\max}}`$ | 관성 때문에 GD보다 더 큰 학습률까지 버틴다 (β = 0.9면 약 1.9배) |
 | Adam | 이런 식의 경계가 없다 | 한 걸음의 크기가 대략 η로 제한되어 쉽게 발산하지 않는다. 대신 η가 크면 최솟값 근처에서 η 크기로 계속 흔들린다 |
 | Newton | 학습률이 없다 | 휘어진 정도로 보폭을 스스로 정한다 |
 
@@ -2032,7 +2017,7 @@ $$
 
 | 클래스 (`src/optimizer.py`) | 방식 | 업데이트 |
 |---|---|---|
-| `Lookahead(inner, k, α)` | 감싸기 | 안쪽 옵티마이저로 매 걸음 이동하고, k걸음마다 $\theta_{\text{slow}} \leftarrow \theta_{\text{slow}} + \alpha(\theta_{\text{fast}} - \theta_{\text{slow}})$, $\theta_{\text{fast}} \leftarrow \theta_{\text{slow}}$ |
+| `Lookahead(inner, k, α)` | 감싸기 | 안쪽 옵티마이저로 매 걸음 이동하고, k걸음마다 $`\theta_{\text{slow}} \leftarrow \theta_{\text{slow}} + \alpha(\theta_{\text{fast}} - \theta_{\text{slow}})`$, $`\theta_{\text{fast}} \leftarrow \theta_{\text{slow}}`$ |
 | `LevenbergMarquardt(f, λ)` | 섞기 | $d = (H + \lambda I)^{-1} \nabla f$ 를 시도해서, 손실이 줄면 받아들이고 λ ÷ 10 (Newton 쪽), 늘면 버리고 λ × 10 (GD 쪽) |
 | `SwitchOptimizer(first, second, n)` | 바꾸기 | 처음 n걸음은 first로, 그 뒤는 second로 이동 |
 
@@ -2275,15 +2260,15 @@ x² + y² 같은 함수에는 "데이터"가 없어서 SGD를 비교할 수 없�
 1. **가중합**: 입력마다 중요도(가중치 w)를 곱해서 모두 더하고, 편향 b를 더한다. 이는 벡터의 내적이다.
 2. **활성화**: 그 결과를 활성화 함수(예: sigmoid)에 통과시켜 출력을 만든다.
 
-$$
+```math
 z = w_1 x_1 + w_2 x_2 + b = \mathbf{w} \cdot \mathbf{x} + b, \qquad a = \sigma(z)
-$$
+```
 
 **예시**: 입력 $x = (2, 3)$, 가중치 $w = (0.5, -1)$, 편향 $b = 1$ 이면
 
-$$
+```math
 z = 0.5 \times 2 + (-1) \times 3 + 1 = -1, \qquad a = \sigma(-1) \approx 0.269
-$$
+```
 
 뉴런 여러 개를 나란히 놓으면 가중치 벡터들이 행(row)으로 쌓여 **행렬** $W$ 가 되고, 가중합 여러 개를 $W x$ 한 번으로 계산할 수 있다. 이것이 **층(layer)** 이고, 층을 쌓은 것이 신경망이다.
 
@@ -2291,9 +2276,9 @@ $$
 
 1958년 로젠블랫의 퍼셉트론은 활성화 함수로 **계단 함수(step function)** 를 썼다. 가중합 z가 0 이상이면 1, 아니면 0을 내는 "예/아니오" 스위치다.
 
-$$
+```math
 \text{step}(z) = \begin{cases} 1 & (z \ge 0) \\ 0 & (z < 0) \end{cases}
-$$
+```
 
 여기서 출발해 활성화 함수가 바뀌어 온 이유는 **서로 다른 두 가지 문제** 때문이다. 둘을 구분해야 흐름이 정확히 보인다.
 
@@ -2305,19 +2290,19 @@ $$
 
 단, 층을 쌓으려면 층 사이에 **곡선(비선형) 활성화 함수**가 꼭 있어야 한다. 활성화 없이 직선 계산만 쌓으면 아무리 쌓아도 직선 하나와 같기 때문이다.
 
-$$
+```math
 \text{1층: } h = 2x, \quad \text{2층: } y = 3h \quad\Rightarrow\quad y = 3 \times 2x = 6x
-$$
+```
 
-행렬로도 같다. $W_2 (W_1 x) = (W_2 W_1) x$ 이고, $W_2 W_1$ 은 행렬 **하나**다(2장의 행렬 곱 = 변형을 연달아 하기). 층 사이의 활성화 함수가 공간을 **휘게** 만들어야 층을 쌓는 의미가 생긴다.
+행렬로도 같다. $`W_2 (W_1 x) = (W_2 W_1) x`$ 이고, $`W_2 W_1`$ 은 행렬 **하나**다(2장의 행렬 곱 = 변형을 연달아 하기). 층 사이의 활성화 함수가 공간을 **휘게** 만들어야 층을 쌓는 의미가 생긴다.
 
 **문제 2. 학습 불가능: 계단 함수는 기울기가 0이다**
 
 계단 함수는 평평한 두 선으로 되어 있어서, 0이 아닌 모든 곳에서 **기울기가 0**이다(0에서는 끊어져 있어 기울기를 정의할 수 없다). 4장의 역전파는 각 단계의 기울기를 **곱해서** 전달하는데, 중간에 0이 하나라도 있으면 전체가 0이 된다.
 
-$$
+```math
 \frac{\partial L}{\partial W_1} = \cdots \times \underbrace{\text{step}'(z_1)}_{= 0} \times \cdots = 0
-$$
+```
 
 그러면 "가중치를 어느 쪽으로 고쳐야 손실이 줄어드나"를 전혀 알 수 없다. 0장 XOR 그림처럼 사람이 손으로 정해 주면 계단 함수로 만든 2층 신경망도 XOR을 풀 수 있다. 하지만 그런 가중치를 **데이터로 찾아낼 방법이 없었다.** (원래 퍼셉트론은 경사하강법 대신 "틀리면 그 입력 쪽으로 가중치를 조금 옮긴다"는 자체 학습 규칙을 썼는데, 이 규칙은 층이 하나일 때만 쓸 수 있다.)
 
@@ -2351,9 +2336,9 @@ sigmoid의 기울기는 **최대 0.25**다(그림의 빨간 점선). 역전파�
 
 클래스가 2개면 softmax는 sigmoid와 같다. 첫 번째 클래스의 확률을 정리하면
 
-$$
+```math
 \frac{e^{z_1}}{e^{z_1} + e^{z_2}} = \frac{1}{1 + e^{-(z_1 - z_2)}} = \sigma(z_1 - z_2)
-$$
+```
 
 즉 **softmax는 sigmoid의 다중 클래스 버전**이다. 자세한 내용은 5장 [Softmax](#softmax-점수를-확률로-바꾸기)에 있다.
 
@@ -2378,17 +2363,17 @@ $$
 | 단계 | 수식 | shape |
 |---|---|---|
 | 입력 | $x$ | (2,) |
-| 은닉층 선형 결합 | $z_1 = W_1 x + b_1$ | (2,2) @ (2,) + (2,) → (2,) |
-| 은닉층 활성화 | $a_1 = \sigma(z_1)$ | (2,) |
-| 출력층 선형 결합 | $z_2 = W_2 \cdot a_1 + b_2$ | (2,) · (2,) + scalar → scalar |
+| 은닉층 선형 결합 | $`z_1 = W_1 x + b_1`$ | (2,2) @ (2,) + (2,) → (2,) |
+| 은닉층 활성화 | $`a_1 = \sigma(z_1)`$ | (2,) |
+| 출력층 선형 결합 | $`z_2 = W_2 \cdot a_1 + b_2`$ | (2,) · (2,) + scalar → scalar |
 | 출력층 활성화 | $\hat{y} = \sigma(z_2)$ | scalar |
 | 손실 (BCE) | $L = -\left[ y \log \hat{y} + (1-y) \log(1-\hat{y}) \right]$ | scalar |
 
 **활성화 함수 sigmoid**는 어떤 수든 0과 1 사이로 눌러 준다. 그래서 출력 $\hat{y}$ 을 "정답이 1일 확률"로 해석할 수 있다.
 
-$$
+```math
 \sigma(z) = \frac{1}{1 + e^{-z}}
-$$
+```
 
 **손실 함수 BCE(Binary Cross-Entropy)** 는 정답이 1인데 $\hat{y}$ 이 0에 가까우면(틀린 쪽으로 확신하면) 손실이 매우 커진다. 이 식이 어디서 왔는지는 5장에서 다룬다.
 
@@ -2400,9 +2385,9 @@ $$
 
 미분도 같다. W₂가 손실 L에 주는 영향은 "W₂ → z₂", "z₂ → ŷ", "ŷ → L" 각 단계의 영향을 **곱한 것**이다.
 
-$$
+```math
 \frac{\partial L}{\partial W_2} = \frac{\partial L}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z_2} \cdot \frac{\partial z_2}{\partial W_2}
-$$
+```
 
 역전파는 이 곱셈을 **출력 쪽에서부터 거꾸로** 진행한다. 앞에서 계산한 값을 다음 단계에서 재사용하므로 효율적이다.
 
@@ -2420,55 +2405,55 @@ flowchart RL
 
 **① 손실 → 예측값**
 
-$$
+```math
 \frac{\partial L}{\partial \hat{y}} = -\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}} \qquad \text{shape: scalar}
-$$
+```
 
 **② 예측값 → 출력층 z₂** : sigmoid의 미분이 필요하다.
 
-$$
+```math
 \sigma'(z) = \sigma(z)\,(1 - \sigma(z))
-$$
+```
 
 이 식은 $\sigma(z) = (1 + e^{-z})^{-1}$ 을 미분하면 $\frac{e^{-z}}{(1+e^{-z})^2}$ 이 되고, 이를 $\frac{1}{1+e^{-z}} \cdot \frac{e^{-z}}{1+e^{-z}} = \sigma(z)(1-\sigma(z))$ 로 정리해서 얻는다.
 
 ①과 곱하면 놀랍도록 깔끔하게 정리된다.
 
-$$
+```math
 \frac{\partial L}{\partial z_2}
 = \left( -\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}} \right) \hat{y}(1-\hat{y})
 = -y(1-\hat{y}) + (1-y)\hat{y}
 = \hat{y} - y
 \qquad \text{shape: scalar}
-$$
+```
 
 **"예측 − 정답"**, 즉 틀린 만큼이 그대로 출력층의 기울기가 된다. sigmoid와 BCE를 함께 쓰는 이유 중 하나다.
 
-**③ z₂ → W₂, b₂** : $z_2 = W_2 \cdot a_1 + b_2$ 에서 $W_2$ 의 각 원소는 $a_1$ 의 같은 위치 원소와 곱해지므로
+**③ z₂ → W₂, b₂** : $`z_2 = W_2 \cdot a_1 + b_2`$ 에서 $W_2$ 의 각 원소는 $a_1$ 의 같은 위치 원소와 곱해지므로
 
-$$
+```math
 \frac{\partial L}{\partial W_2} = \frac{\partial L}{\partial z_2} \, a_1 \quad \text{shape: (2,)}, \qquad
 \frac{\partial L}{\partial b_2} = \frac{\partial L}{\partial z_2} \quad \text{shape: scalar}
-$$
+```
 
 **④ z₂ → 은닉층 출력 a₁** : 같은 식을 $a_1$ 로 미분하면
 
-$$
+```math
 \frac{\partial L}{\partial a_1} = \frac{\partial L}{\partial z_2} \, W_2 \qquad \text{shape: (2,)}
-$$
+```
 
 **⑤ a₁ → z₁** : sigmoid가 원소별로 적용되었으므로, 기울기도 **원소별로 곱한다** (⊙: 원소별 곱).
 
-$$
+```math
 \frac{\partial L}{\partial z_1} = \frac{\partial L}{\partial a_1} \odot a_1 \odot (1 - a_1) \qquad \text{shape: (2,)}
-$$
+```
 
-**⑥ z₁ → W₁, b₁** : $z_{1,i} = \sum_j W_{1,ij} \, x_j + b_{1,i}$ 이므로 $\frac{\partial z_{1,i}}{\partial W_{1,ij}} = x_j$ 이다. 모든 (i, j)를 모으면 **외적(outer product)** 이 된다.
+**⑥ z₁ → W₁, b₁** : $`z_{1,i} = \sum_j W_{1,ij} \, x_j + b_{1,i}`$ 이므로 $`\frac{\partial z_{1,i}}{\partial W_{1,ij}} = x_j`$ 이다. 모든 (i, j)를 모으면 **외적(outer product)** 이 된다.
 
-$$
+```math
 \frac{\partial L}{\partial W_1} = \frac{\partial L}{\partial z_1} \, x^{\top} = \text{outer}\left( \frac{\partial L}{\partial z_1}, x \right) \quad \text{shape: (2,2)}, \qquad
 \frac{\partial L}{\partial b_1} = \frac{\partial L}{\partial z_1} \quad \text{shape: (2,)}
-$$
+```
 
 > [!TIP]
 > **shape 확인 규칙**: 어떤 값에 대한 기울기의 shape은 **그 값의 shape과 같다.** W₁이 (2,2)이면 ∂L/∂W₁도 (2,2)여야 한다. shape이 맞지 않으면 유도 어딘가가 틀린 것이다.
@@ -2478,15 +2463,13 @@ $$
 
 유도한 기울기가 맞는지는 1장의 **중심차분으로 검증**할 수 있다. 가중치 하나 $w$ 를 $\pm h$ 만큼 바꿔 손실을 다시 계산하면
 
-$$
-\frac{\partial L}{\partial w} \approx \frac{L(w + h) - L(w - h)}{2h}
-$$
+$`\displaystyle \frac{\partial L}{\partial w} \approx \frac{L(w + h) - L(w - h)}{2h}`$
 
 이고, 이 값이 역전파 결과와 일치해야 한다. 이것이 딥러닝 프레임워크 개발에서 쓰는 **gradient check**다.
 
 AutoGrad 엔진은 위 유도 과정을 자동화한 것이다. 각 연산(곱셈, 덧셈, sigmoid…)이 "자기 입력에 대한 국소 미분"만 알고 있으면, 계산 그래프를 거꾸로 따라가며 연쇄 법칙으로 곱해 나간다. 다음 미션에서 구현할 내용이다.
 
-배치(batch) 입력 $X$ (N×2)를 쓰면 $\partial L / \partial W_1 = (\partial L / \partial Z_1)^{\top} X$ 처럼 외적의 합이 행렬 곱으로 바뀐다.
+배치(batch) 입력 $X$ (N×2)를 쓰면 $`\partial L / \partial W_1 = (\partial L / \partial Z_1)^{\top} X`$ 처럼 외적의 합이 행렬 곱으로 바뀐다.
 
 </details>
 
@@ -2553,9 +2536,9 @@ AutoGrad 엔진은 위 유도 과정을 자동화한 것이다. 각 연산(곱�
 
 **정규분포 N(μ, σ²)** : 키, 측정 오차처럼 평균 근처에 몰려 있고 멀어질수록 드물어지는 연속적인 값
 
-$$
+```math
 p(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)
-$$
+```
 
 - μ (뮤): 중심 위치 (평균)
 - σ (시그마): 퍼진 정도 (표준편차). σ²는 분산이다.
@@ -2563,9 +2546,9 @@ $$
 
 **베르누이 분포 B(p)** : 동전 던지기, 스팸/정상처럼 결과가 1 또는 0 두 가지뿐인 경우
 
-$$
+```math
 P(X = x) = p^{x} (1-p)^{1-x}, \quad x \in \{0, 1\}
-$$
+```
 
 x = 1을 넣으면 p, x = 0을 넣으면 1 − p가 나온다. 두 경우를 하나의 식으로 쓴 것이다. 값이 띄엄띄엄 있으므로 **확률질량(PMF)** 이라 하고, 막대그래프로 그린다.
 
@@ -2577,9 +2560,9 @@ x = 1을 넣으면 p, x = 0을 넣으면 1 − p가 나온다. 두 경우를 하
 
 "앞면 확률이 0.5인 동전을 3번 던지면, H, H, T가 나올 확률은?"
 
-$$
+```math
 0.5 \times 0.5 \times 0.5 = 0.125
-$$
+```
 
 동전(p = 0.5)은 고정이고, 가능한 여러 결과(HHH, HHT, …) 중 하나의 가능성을 묻는다. 모든 결과의 확률을 더하면 1이다.
 
@@ -2589,9 +2572,9 @@ $$
 
 결과는 이미 관측되어 **고정**이다. 이번에는 p 후보를 하나씩 넣어 보며 "p가 이 값이라면 이 결과가 나올 확률"을 계산한다. 이것이 **우도**다.
 
-$$
+```math
 \mathcal{L}(p) = p^7 (1 - p)^3
-$$
+```
 
 (앞면 확률 p를 7번, 뒷면 확률 1 − p를 3번 곱한 것. 던진 순서는 상관없으므로 순서를 정하는 상수는 생략했다.)
 
@@ -2623,24 +2606,24 @@ $$
 | $\mathcal{L}(\theta)$ | 우도 엘 | 파라미터가 θ일 때의 우도 (손실 L과 구분하려고 필기체를 쓴다) |
 | $p(y \mid x)$ | 피 와이 바 엑스 | x가 **주어졌을 때** y가 나올 확률 (조건부 확률). 세로선 \| 은 "~일 때" |
 | $p(y \mid x; \theta)$ | | 위와 같고, 세미콜론 뒤는 "파라미터가 θ인 모델에서" |
-| $\prod_{i=1}^{n}$ | 프로덕트 (파이) | **모두 곱하라**. 합 기호 Σ의 곱셈 버전. $\prod_{i=1}^{3} a_i = a_1 \times a_2 \times a_3$ |
+| $\prod_{i=1}^{n}$ | 프로덕트 (파이) | **모두 곱하라**. 합 기호 Σ의 곱셈 버전. $`\prod_{i=1}^{3} a_i = a_1 \times a_2 \times a_3`$ |
 | $\arg\max_{\theta}$ | 아그맥스 | 뒤의 값을 **가장 크게 만드는 θ** (최댓값 자체가 아니라 그때의 θ). argmin은 가장 작게 만드는 θ |
 
 ### 최대우도추정(MLE): 데이터를 가장 잘 설명하는 모델 찾기
 
 위 동전 예시처럼 **관측된 데이터가 나올 확률(우도)을 최대로 만드는 파라미터**를 고르는 방법이 MLE다. 데이터가 여러 개인 일반적인 경우로 쓰면 다음과 같다.
 
-데이터 $(x_1, y_1), \dots, (x_n, y_n)$ 이 서로 독립이면 우도는 각 확률의 곱이다.
+데이터 $`(x_1, y_1), \dots, (x_n, y_n)`$ 이 서로 독립이면 우도는 각 확률의 곱이다.
 
-$$
+```math
 \mathcal{L}(\theta) = \prod_{i=1}^{n} p(y_i \mid x_i; \theta)
-$$
+```
 
 곱셈은 다루기 어렵고 작은 확률을 계속 곱하면 컴퓨터에서 0이 되어 버리므로, **로그**를 씌워 덧셈으로 바꾼다. 로그는 증가함수라서 최댓값의 위치는 변하지 않는다.
 
-$$
+```math
 \arg\max_{\theta} \prod_i p(y_i \mid x_i) = \arg\max_{\theta} \sum_i \log p(y_i \mid x_i)
-$$
+```
 
 딥러닝은 "최대화"보다 "최소화"로 표현하므로, 음수를 붙인 **음의 로그우도(NLL)** 를 최소화한다. 이 NLL이 곧 손실 함수가 된다.
 
@@ -2648,26 +2631,26 @@ $$
 
 **가정**: 정답은 모델의 예측에 정규분포 잡음이 더해진 값이다.
 
-$$
+```math
 y = f(x) + \varepsilon, \quad \varepsilon \sim N(0, \sigma^2)
 \quad \Rightarrow \quad
 p(y \mid x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(y - f(x))^2}{2\sigma^2} \right)
-$$
+```
 
 **로그우도를 계산하면**
 
-$$
+```math
 \sum_{i=1}^{n} \log p(y_i \mid x_i)
 = \sum_{i=1}^{n} \left[ -\frac{(y_i - f(x_i))^2}{2\sigma^2} - \log \sqrt{2\pi\sigma^2} \right]
-$$
+```
 
 σ는 모델과 관계없는 상수이므로, 최대화에 영향을 주는 것은 첫 번째 항뿐이다.
 
-$$
+```math
 \arg\max_{f} \sum_i \log p(y_i \mid x_i)
 = \arg\min_{f} \sum_i (y_i - f(x_i))^2
 = \arg\min_{f} \underbrace{\frac{1}{n} \sum_i (y_i - f(x_i))^2}_{\text{MSE}}
-$$
+```
 
 **결론**: 오차가 정규분포를 따른다고 가정하면, 우도를 최대화하는 것과 MSE를 최소화하는 것은 같다.
 
@@ -2679,25 +2662,25 @@ $$
 
 **이진 분류 (베르누이)**: 모델 출력 $\hat{y}$ 을 "정답이 1일 확률"로 보면, 정답 y가 나올 확률은 베르누이 분포다.
 
-$$
+```math
 p(y \mid x) = \hat{y}^{\,y} (1-\hat{y})^{1-y}
-$$
+```
 
 로그를 씌우고 음수를 붙이면
 
-$$
+```math
 -\log p(y \mid x) = -\left[ y \log \hat{y} + (1-y) \log(1-\hat{y}) \right]
-$$
+```
 
 이것이 4장에서 사용한 **BCE 손실**이다. 데이터 전체에 대해 더하면 NLL이 되므로, BCE 최소화 = 베르누이 가정 하의 MLE이다.
 
 **다중 분류 (카테고리 분포)**: 클래스가 K개이고, 정답을 원-핫 벡터 $y = (0, \dots, 1, \dots, 0)$, 모델 출력을 각 클래스의 확률 $\hat{y}_k$ 로 두면
 
-$$
+```math
 p(y \mid x) = \prod_{k=1}^{K} \hat{y}_k^{\,y_k}
 \quad \Rightarrow \quad
 -\log p(y \mid x) = -\sum_{k=1}^{K} y_k \log \hat{y}_k
-$$
+```
 
 이것이 **Cross-Entropy 손실**이다. 정답 클래스에 대한 $-\log(\text{확률})$ 만 남는다.
 
@@ -2705,9 +2688,9 @@ $$
 
 다중 분류 모델은 각 클래스에 대한 원점수(logit) z를 출력한다. 이 점수는 음수일 수도 있고 합이 1도 아니다. **Softmax**는 이를 확률로 바꾼다.
 
-$$
+```math
 \text{softmax}(z)_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}
-$$
+```
 
 - 지수함수 $e^{z}$ 는 항상 양수 → 모든 출력이 양수
 - 전체 합으로 나눔 → 합이 1
@@ -2720,13 +2703,13 @@ $$
 <details>
 <summary><b>더 깊이 보기 (전공자용): 정보 이론과의 연결 (보너스)</b></summary>
 
-- **엔트로피** $H(p) = -\sum_k p_k \log p_k$ : 분포 p의 불확실성
-- **Cross-Entropy** $H(p, q) = -\sum_k p_k \log q_k$ : 실제 분포 p를 모델 분포 q로 표현할 때의 평균 정보량
-- **KL-Divergence** $D_{KL}(p \,\Vert\, q) = \sum_k p_k \log \frac{p_k}{q_k}$ : 두 분포의 차이 (항상 0 이상, p = q일 때만 0)
+- **엔트로피** $`H(p) = -\sum_k p_k \log p_k`$ : 분포 p의 불확실성
+- **Cross-Entropy** $`H(p, q) = -\sum_k p_k \log q_k`$ : 실제 분포 p를 모델 분포 q로 표현할 때의 평균 정보량
+- **KL-Divergence** $`D_{KL}(p \,\Vert\, q) = \sum_k p_k \log \frac{p_k}{q_k}`$ : 두 분포의 차이 (항상 0 이상, p = q일 때만 0)
 
-세 값 사이에는 $H(p, q) = H(p) + D_{KL}(p \,\Vert\, q)$ 관계가 있다. H(p)는 모델과 무관한 상수이므로, **Cross-Entropy 최소화 = KL-Divergence 최소화**, 즉 모델 분포를 실제 데이터 분포에 가깝게 만드는 것이다.
+세 값 사이에는 $`H(p, q) = H(p) + D_{KL}(p \,\Vert\, q)`$ 관계가 있다. H(p)는 모델과 무관한 상수이므로, **Cross-Entropy 최소화 = KL-Divergence 최소화**, 즉 모델 분포를 실제 데이터 분포에 가깝게 만드는 것이다.
 
-Softmax + Cross-Entropy의 gradient도 $\partial L / \partial z_k = \hat{y}_k - y_k$ 로, 4장의 sigmoid + BCE와 같은 "예측 − 정답" 형태가 된다.
+Softmax + Cross-Entropy의 gradient도 $`\partial L / \partial z_k = \hat{y}_k - y_k`$ 로, 4장의 sigmoid + BCE와 같은 "예측 − 정답" 형태가 된다.
 
 </details>
 
